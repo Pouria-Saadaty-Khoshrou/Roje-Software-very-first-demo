@@ -47,3 +47,24 @@ def deleteProjectById(id:str):
     session.run(query,id=id)
     session.close()
 
+def getProjectExperiments(id:str):
+    query = "match (n:Project {id:$id})-[r]->(experiments:Experiment) return experiments "
+    session = driver.session()
+    result = session.run(query,id=id)
+    experiments = []
+    for each in result:
+        experiment = {
+            "name":each['experiments']['name'],
+            "id":each['experiments']['id'],
+            'Created at':each['experiments']['created_at']
+        }
+        experiments.append(experiment)
+    session.close()
+    return experiments
+
+
+
+
+
+
+

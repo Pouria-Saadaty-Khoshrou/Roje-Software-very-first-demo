@@ -1,0 +1,48 @@
+{% include 'header.html' %}
+<div class="main-panel">
+    <div class="row">
+        <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Project Info</h4>
+                    <!--                  <p class="card-description">-->
+                    <!--                    Add tags <code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code> or class <code>.h1</code> to <code>.h6</code>-->
+                    <!--                  </p>-->
+                    <div class="template-demo">
+                        <h1>{{experiment['name']}}</h1>
+                        <h2>{{experiment['Created_at']}}</h2>
+                        <a type="button" class="btn btn-danger" href="/delexperiment/{{experiment['id']}}">Delete
+                            Project </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Basic Table</h4>
+                    <p class="card-description">
+                        Add class <code>.table</code>
+                    </p>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Profile</th>
+                                <th>Page</th>
+                                <th>Created</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'footer.html' %}

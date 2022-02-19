@@ -4,6 +4,7 @@ from flask import render_template, request , make_response
 
 from nodes import users as uFunc
 from nodes import projects as pFunc
+from nodes import experiments as exFunc
 @app.route('/',methods=['GET'])
 def index():
     return render_template('login.html')
@@ -50,7 +51,8 @@ def create_projects():
 @app.route("/projects/<id>",methods=['GET'])
 def read_project(id):
     project = pFunc.getProjectById(id)
-    resp = make_response(render_template('project.html',project=project))
+    experiments = pFunc.getProjectExperiments(id)
+    resp = make_response(render_template('project.html',project=project,experiments=experiments))
     return resp
 @app.route("/projectsdel/<id>",methods=['GET'])
 def delete_project(id):
@@ -59,4 +61,25 @@ def delete_project(id):
     userProjects = pFunc.findUserProjects(userId)
     resp = make_response(render_template('projects.html',userProjects=userProjects))
     return resp
+
+@app.route("/experiment",methods=['POST'])
+def makeExperiment():
+    userId = request.cookies.get('User_id')
+    form = request.form.to_dict()
+    exFunc.createExperiment(form['projectId'],form['experimentName'])
+    project = pFunc.getProjectById(form['projectId'])
+    experiments = pFunc.getProjectExperiments(form['projectId'])
+    resp = make_response(render_template('project.html',project=project,experiments=experiments))
+    return resp
+@app.route('/experiment/<id>',methods=['GET'])
+def read_experiment(id):
+    experiment = exFunc.getExperimentById(id)
+    res = make_response(render_template('experiment.html',experiment=experiment))
+    return res
+
+@app.route('/protocols',methods=['POST'])
+def read_protocol():
+    return True
+
+
 
