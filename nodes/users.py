@@ -20,3 +20,18 @@ def loginUser(userName,password):
     return user
 
 
+def create_user(userDict:dict):
+    session = driver.session()
+    query = "create (n:User { " \
+            "id:apoc.create.uuid(), " \
+            "user_name:$user_name, " \
+            "password:$password," \
+            "created_at:datetime() }) "
+    session.run(query,
+                user_name=userDict['user_name'],
+                password=userDict['password'])
+    session.close()
+
+
+
+

@@ -4,7 +4,7 @@
         <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Project Info</h4>
+                    <h4 class="card-title">experiment Info</h4>
                     <!--                  <p class="card-description">-->
                     <!--                    Add tags <code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code> or class <code>.h1</code> to <code>.h6</code>-->
                     <!--                  </p>-->
@@ -12,13 +12,38 @@
                         <h1>{{experiment['name']}}</h1>
                         <h2>{{experiment['Created_at']}}</h2>
                         <a type="button" class="btn btn-danger" href="/delexperiment/{{experiment['id']}}">Delete
-                            Project </a>
+                            experiment </a>
 
                     </div>
                 </div>
             </div>
         </div>
+        <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">protocol form</h4>
+                    <p class="card-description">
+                        add a protocol
+                    </p>
+                    <form class="forms-sample" action="/protocols" method="post">
+                        <div class="form-group">
+                            <label for="exampleInputUsername1">name</label>
+                            <input type="text" class="form-control" id="name" name="name"
+                                   placeholder="Experiment Name">
+                            <select class="form-control" id="exampleFormControlSelect2" name="tree_level">
+                                {% for each in tree_levels %}
+                                  <option>{{ each }}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" class="form-control" name="experiment_id" value="{{experiment['id']}}">
+                        </div>
 
+                        <button type="submit" class="btn btn-primary me-2">Submit</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
         <div class="col-lg-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">

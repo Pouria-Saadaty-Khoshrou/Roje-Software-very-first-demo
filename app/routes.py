@@ -1,10 +1,11 @@
 from app import app
 from flask import render_template, request , make_response
-
+import json
 
 from nodes import users as uFunc
 from nodes import projects as pFunc
 from nodes import experiments as exFunc
+from nodes import protocol as prFunc
 @app.route('/',methods=['GET'])
 def index():
     return render_template('login.html')
@@ -74,12 +75,40 @@ def makeExperiment():
 @app.route('/experiment/<id>',methods=['GET'])
 def read_experiment(id):
     experiment = exFunc.getExperimentById(id)
-    res = make_response(render_template('experiment.html',experiment=experiment))
+    my_tree = exFunc.getTree(id)
+    if len(my_tree[0]) ==0:
+        tree_levels = [0]
+    else:
+        tree_levels = list(my_tree[0].keys())
+    print(my_tree)
+    res = make_response(render_template('experiment.html',experiment=experiment,tree_levels=tree_levels))
     return res
 
 @app.route('/protocols',methods=['POST'])
-def read_protocol():
-    return True
+def create_protocol():
+    data = request.form.to_dict()
+    experiment = exFunc.getExperimentById(data["experiment_id"])
+    protocol_id = prFunc.make_protocol(data['name'])
+    my_tree = exFunc.getTree(data["experiment_id"])
+    tree_level = data['tree_level']
+    tree_level = int(tree_level)
+    if len(my_tree[0]) ==0:
+        tree_levels = [0]
+        prFunc.connect_to_idies(protocol_id,[experiment['id']])
+    else:
+
+        parent_list = my_tree[0][tree_level]
+        parent_idies = []
+        for each in parent_list:
+            parent_idies.append(my_tree[1].nodes[each]['properties']['id'])
+        prFunc.connect_to_idies(protocol_id, parent_idies)
+        tree_levels = list(my_tree[0].keys())
+    res = make_response(render_template('experiment.html',experiment=experiment,tree_levels=tree_levels))
+    return res
 
 
-
+@app.route('/create_account',methods=['POST'])
+def make_account():
+    data =  request.form.to_dict()
+    uFunc.create_user(data)
+    return {"response":"user created"}
