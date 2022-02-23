@@ -1,0 +1,71 @@
+<!--#started by pouria - date : 7/2/2022-->
+
+{% include 'header.html' %}
+
+<div class="col-md-6">
+    <div class="card-body">
+        <h4 class="card-title">BOMs</h4>
+        <div class="template-demo">
+<!--            {% for each in protocols %}-->
+<!--            <a type="button" class="btn btn-secondary" href="/BOM/{{each['id']}}">{{ each['BOM_name'] }}</a>-->
+<!--            {% endfor %}-->
+            <p>BOMS showes here</p>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">New BOM Form</h4>
+
+            <form class="forms-sample" action="/BOMs" method="post">
+                <div class="form-group" data-select2-id="7">
+
+                    <div class="form-group">
+                        <label for="exampleInputUsername1">BOM Name</label>
+                        <input type="text" class="form-control" id="exampleInputUsername1" name="BOM_Name" placeholder="BOM Name ex : Water">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleInputUsername1">BOM Description</label>
+                        <input type="text" class="form-control" id="exampleInputUsername1" name="BOM_Description" placeholder="BOM Description ex : 100% water">
+                    </div>
+
+                    <div class="form-group" data-select2-id="7">
+                        <label>BOM List</label>
+                        <select class="js-example-basic-multiple w-100 select2-hidden-accessible" multiple="" name="BOM_id_List" tabindex="-1" aria-hidden="true">
+
+                            {% for each in bom_names %}
+                                <option value="{{each['id']}}" data-select2-id="3">{{each['BOM_name']}}</option>
+                            {% endfor %}
+
+                        </select>
+                    </div>
+<!--                        {% for each in BOM %}-->
+<!--                            <option value="{{each['id']}}" data-select2-id="3">BOM: {{each['device_name']}}</option>-->
+<!--                        {% endfor %}-->
+
+<!--                        {% for each in standard %}-->
+<!--                            <option value="{{each['id']}}" data-select2-id="3">Standard: {{each['Standard_name']}}</option>-->
+<!--                        {% endfor %}-->
+
+<!--                        {% for each in devices %}-->
+<!--                            <option value="{{each['id']}}" data-select2-id="3">Device: {{each['device_name']}}</option>-->
+<!--                        {% endfor %}-->
+
+                    </select>
+                </div>
+
+
+
+                <button type="submit" class="btn btn-primary me-2">Submit</button>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% include 'footer.html' %}
+<!--#ended by pouria - date : 7/2/2022-->

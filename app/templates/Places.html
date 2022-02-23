@@ -1,0 +1,35 @@
+<!--#started by pouria - date : 7/2/2022-->
+
+{% include 'header.html' %}
+
+
+<div class="col-md-6">
+    <div class="card-body">
+        <h4 class="card-title">Places</h4>
+        <div class="template-demo">
+            {% for each in places %}
+            <a type="button" class="btn btn-secondary" href="/Places/{{each['id']}}">{{ each['Place_name'] }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">New Place Form</h4>
+
+            <form class="forms-sample" action="/Places" method="post">
+                <div class="form-group">
+                    <label for="exampleInputUsername1">Place Name</label>
+                    <input type="text" class="form-control" id="exampleInputUsername1" name="Place_Name" placeholder="Places Name ex : Lab no49">
+                </div>
+                <button type="submit" class="btn btn-primary me-2">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% include 'footer.html' %}
+<!--#ended by pouria - date : 7/2/2022-->

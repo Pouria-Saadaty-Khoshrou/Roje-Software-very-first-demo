@@ -1,0 +1,43 @@
+<!--#started by pouria - date : 7/2/2022-->
+{% include 'header.html' %}
+
+
+<div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">New Device Form</h4>
+
+            <form class="forms-sample" action="/Devices" method="post">
+                <div class="form-group">
+                    <label>Device Name</label>
+                    <input type="text" class="form-control" id="exampleInputUsername1" name="device_name" placeholder="Device Name">
+                </div>
+
+                <div class="form-group">
+                    <label>Device ID</label>
+                    <input type="number" class="form-control" id="exampleInputUsername1" name="device_id" placeholder="Device ID">
+                </div>
+
+                <div class="form-group">
+                    <label>Device Description</label>
+                    <input type="text" class="form-control" id="exampleInputUsername1" name="device_description" placeholder="Device Description">
+                </div>
+
+                <div class="form-group" data-select2-id="7">
+                    <label>Lab Name</label>
+                    <select class="js-example-basic-single w-100 select2-hidden-accessible" name="place_id" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                        {% for each in Lab %}
+                            <option value="{{each['id']}}" data-select2-id="3">{{each['Place_name']}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary me-2">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% include 'footer.html' %}
+<!--#ended by pouria - date : 7/2/2022-->
