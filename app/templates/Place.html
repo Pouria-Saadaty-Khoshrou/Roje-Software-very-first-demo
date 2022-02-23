@@ -1,0 +1,46 @@
+<!--#started by pouria - date : 7/2/2022-->
+
+{% include 'header.html' %}
+
+  <div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Place Info</h4>
+<!--                  <p class="card-description">-->
+<!--                    Add tags <code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code> or class <code>.h1</code> to <code>.h6</code>-->
+<!--                  </p>-->
+        <div class="template-demo">
+          <h1>{{place['Place_name']}}</h1>
+          <h2>{{place['created_at']}}</h2>
+          <a type="button" class="btn btn-danger" href="/delete_place/{{place['id']}}">Delete Place </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+<div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+
+
+    <div class="card-body">
+        <h4 class="card-title">Devices</h4>
+        <div class="template-demo">
+            {% for each in device %}
+<!--            <a type="button" class="btn btn-secondary" href="/projects/{{each['id']}}">{{ each['Standard_name'] }}</a>-->
+            <h3>{{each['device_name']}}</h3>
+            <p>{{each['device_description']}}</p>
+            <p>{{each['device_id']}}</p>
+            <a type="button" class="btn btn-danger" href="/delete_device/{{each['id']}}">Delete Project </a>
+            {% endfor %}
+        </div>
+
+    </div>
+
+
+    </div>
+</div>
+
+{% include 'footer.html' %}
+<!--#ended by pouria - date : 7/2/2022-->

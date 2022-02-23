@@ -1,0 +1,60 @@
+{% include 'header.html' %}
+<div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Project Info</h4>
+<!--                  <p class="card-description">-->
+<!--                    Add tags <code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code> or class <code>.h1</code> to <code>.h6</code>-->
+<!--                  </p>-->
+                  <div class="template-demo">
+                    <h1>{{project['name']}}</h1>
+                    <h2>{{project['Created_at']}}</h2>
+                    <a type="button" class="btn btn-danger" href="/projectsdel/{{project['id']}}">Delete Project </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+<!--Pouria-->
+
+<div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+
+
+    <div class="card-body">
+        <h4 class="card-title">Standards</h4>
+        <div class="template-demo">
+            {% for each in standards %}
+<!--            <a type="button" class="btn btn-secondary" href="/projects/{{each['id']}}">{{ each['Standard_name'] }}</a>-->
+            <h3>{{each['Standard_name']}}</h3>
+            <p>{{each['Content']}}</p>
+            <a type="button" class="btn btn-danger" href="/delete_standards/{{each['id']}}">Delete Project </a>
+            {% endfor %}
+        </div>
+
+
+    </div>
+
+
+    </div>
+</div>
+
+<!--Pouria-->
+
+<!--<div class="col-md-6 grid-margin stretch-card">-->
+<!--    <div class="card">-->
+<!--        <div class="card-body">-->
+<!--            <h4 class="card-title">New Project Form</h4>-->
+
+<!--            <form class="forms-sample" action="/projects" method="post">-->
+<!--                <div class="form-group">-->
+<!--                    <label for="exampleInputUsername1">Username</label>-->
+<!--                    <input type="text" class="form-control" id="exampleInputUsername1" name="projectName" placeholder="Project Name ex : Moon Lander">-->
+<!--                </div>-->
+<!--                <button type="submit" class="btn btn-primary me-2">Submit</button>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+{% include 'footer.html' %}
