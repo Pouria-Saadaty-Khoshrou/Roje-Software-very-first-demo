@@ -55,13 +55,23 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th>Profile</th>
-                                <th>Page</th>
-                                <th>Created</th>
-                                <th>Status</th>
+                                <th>Level</th>
+                                <th>Protocols</th>
+
                             </tr>
                             </thead>
                             <tbody>
+                            {% for each in protocols %}
+                                <tr>
+                                <td>{{each}}</td>
+                                    <td>
+                                    {% for every in protocols[each] %}
+                                        <label class="badge badge-info">{{every['properties']['name']}}</label>
+                                    {% endfor %}
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
                             </tbody>
                         </table>
                     </div>

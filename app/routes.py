@@ -80,8 +80,17 @@ def read_experiment(id):
         tree_levels = [0]
     else:
         tree_levels = list(my_tree[0].keys())
-    print(my_tree)
-    res = make_response(render_template('experiment.html',experiment=experiment,tree_levels=tree_levels))
+    tree_dict = my_tree[0]
+    tree_graph = my_tree[1]
+    protocols = {}
+    for each in tree_dict:
+        protocols[each]=[]
+        for every in tree_dict[each]:
+            # print(tree_graph.nodes[every])
+            protocols[each].append(tree_graph.nodes[every])
+    print(protocols)
+    del(protocols[0])
+    res = make_response(render_template('experiment.html',experiment=experiment,tree_levels=tree_levels,protocols=protocols))
     return res
 
 @app.route('/protocols',methods=['POST'])
@@ -103,12 +112,13 @@ def create_protocol():
             parent_idies.append(my_tree[1].nodes[each]['properties']['id'])
         prFunc.connect_to_idies(protocol_id, parent_idies)
         tree_levels = list(my_tree[0].keys())
+
     res = make_response(render_template('experiment.html',experiment=experiment,tree_levels=tree_levels))
     return res
 
 
 @app.route('/create_account',methods=['POST'])
 def make_account():
-    data =  request.form.to_dict()
+    data = request.form.to_dict()
     uFunc.create_user(data)
     return {"response":"user created"}
