@@ -29,7 +29,7 @@
                         <div class="form-group">
                             <label for="exampleInputUsername1">name</label>
                             <input type="text" class="form-control" id="name" name="name"
-                                   placeholder="Experiment Name">
+                                   placeholder="Protocol Name">
                             <select class="form-control" id="exampleFormControlSelect2" name="tree_level">
                                 {% for each in tree_levels %}
                                   <option>{{ each }}</option>
@@ -47,10 +47,7 @@
         <div class="col-lg-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Basic Table</h4>
-                    <p class="card-description">
-                        Add class <code>.table</code>
-                    </p>
+                    <h4 class="card-title">Protocols Table</h4>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -78,6 +75,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 {% include 'footer.html' %}

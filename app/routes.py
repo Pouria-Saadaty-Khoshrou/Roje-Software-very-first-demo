@@ -14,6 +14,7 @@ from nodes import places as placeFunc
 from nodes import devices as deviceFunc
 from nodes import protocol as protocolFunc
 from nodes import BOMs as bomFunc
+from nodes import tasks as taskFunc
 
 
 @app.route('/',methods=['GET'])
@@ -326,7 +327,7 @@ def read_protocol(id):
     standards = sFunc.Get_Standard_by_USer_Id(userId)
     user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
     devices = deviceFunc.Get_Device_by_USer_Id(userId)
-
+    tasks = taskFunc.get_tasks_by_protocol_id(id)
     resp = make_response(render_template('Protocol.html',
                                          standards_list=standards_list,
                                          device_list=device_list,
@@ -334,7 +335,8 @@ def read_protocol(id):
                                          standards=standards,
                                          protocol_id=id,
                                          user_boms=user_boms,
-                                         devices=devices))
+                                         devices=devices,
+                                         tasks=tasks))
     return resp
 
 # ---------------ended by pouria - date : 7/2/2022 ---------------#
@@ -382,14 +384,16 @@ def add_standard_to_protocol():
     standards = sFunc.Get_Standard_by_USer_Id(userId)
     user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
     devices = deviceFunc.Get_Device_by_USer_Id(userId)
-
+    tasks = taskFunc.get_tasks_by_protocol_id(id)
     resp = make_response(render_template('Protocol.html',
                                          standards_list=standards_list,
                                          device_list=device_list,
                                          BOM_list=BOM_list,
                                          standards=standards,
                                          protocol_id=id,
-                                         user_boms=user_boms))
+                                         user_boms=user_boms,
+                                         devices=devices,
+                                         tasks=tasks))
 
     return resp
 
@@ -404,7 +408,7 @@ def add_bom_to_protocol():
     device_list = protocolFunc.get_device_by_protocol_id(id)
     BOM_list = protocolFunc.get_BOM_by_protocol_id(id)
     standards = sFunc.Get_Standard_by_USer_Id(userId)
-
+    tasks = taskFunc.get_tasks_by_protocol_id(id)
     user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
     devices = deviceFunc.Get_Device_by_USer_Id(userId)
 
@@ -415,7 +419,8 @@ def add_bom_to_protocol():
                                          standards=standards,
                                          protocol_id=id,
                                          user_boms=user_boms,
-                                         devices=devices))
+                                         devices=devices,
+                                         tasks=tasks))
 
     return resp
 @app.route('/add_device_to_protocol', methods=['post'])
@@ -426,14 +431,13 @@ def add_device_to_protocol():
         return resp
     form = request.form.to_dict(flat=False)
     protocolFunc.connect_to_idies(form['protocol_id'][0], form['devices_id_List'])
-
     protocol_id = form['protocol_id'][0]
     standards_list = protocolFunc.get_standards_by_protocol_id(protocol_id)
     device_list = protocolFunc.get_device_by_protocol_id(protocol_id)
     BOM_list = protocolFunc.get_BOM_by_protocol_id(protocol_id)
     devices = deviceFunc.Get_Device_by_USer_Id(userId)
     standards = sFunc.Get_Standard_by_USer_Id(userId)
-
+    tasks = taskFunc.get_tasks_by_protocol_id(id)
     user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
     resp = make_response(render_template('Protocol.html',
                                          standards_list=standards_list,
@@ -444,6 +448,40 @@ def add_device_to_protocol():
                                          protocol_id=protocol_id,
                                          user_boms=user_boms))
     return resp
+
+
+
+@app.route('/add_task_to_protocol', methods=['post'])
+def add_task_to_protocol():
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    form = request.form.to_dict()
+    print(form)
+    id = form['protocol_id']
+    print('id: ',id)
+    taskFunc.create_tasks(form['task'].split('\r\n'), id)
+    tasks = taskFunc.get_tasks_by_protocol_id(id)
+    print(tasks)
+    standards_list = protocolFunc.get_standards_by_protocol_id(id)
+    device_list = protocolFunc.get_device_by_protocol_id(id)
+    BOM_list = protocolFunc.get_BOM_by_protocol_id(id)
+    standards = sFunc.Get_Standard_by_USer_Id(userId)
+    user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
+    devices = deviceFunc.Get_Device_by_USer_Id(userId)
+    resp = make_response(render_template('Protocol.html',
+                                         standards_list=standards_list,
+                                         device_list=device_list,
+                                         BOM_list=BOM_list,
+                                         standards=standards,
+                                         protocol_id=id,
+                                         user_boms=user_boms,
+                                         devices=devices,
+                                         tasks=tasks))
+
+    return resp
+
 
 
 

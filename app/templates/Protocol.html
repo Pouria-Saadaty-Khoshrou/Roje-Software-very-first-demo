@@ -2,6 +2,68 @@
 {% include 'header.html' %}
 <div class="row">
 
+
+    <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Standards table</h4>
+                <div class="table-responsive pt-3">
+                    <table class="table table-dark">
+                        <thead>
+                        <tr>
+                            <th>
+                                In Order
+                            </th>
+                            <th>
+                                Description
+                            </th>
+                        </tr>
+                        </thead>
+                        {% for each in (tasks) %}
+                        <tbody>
+                        <tr>
+                            <td>
+                                {{loop.index}}
+                            </td>
+                            <td>
+                                {{each['description']}}
+                            </td>
+                        </tr>
+
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Write Tasks</h4>
+
+                <div class="form-group">
+                    <div class="form-group" data-select2-id="7">
+                        <label>BOM List</label>
+                        <form class="forms-sample" action="/add_task_to_protocol" method="post">
+
+                            <textarea rows = "25" cols = "60" name = "task", placeholder="Enter the tasks"></textarea>
+                            <input type="hidden" name="protocol_id" value="{{ protocol_id }}">
+                            <button type="submit" class="btn btn-primary me-2">Submit</button>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
     <div class="col-lg-6 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
