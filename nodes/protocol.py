@@ -6,7 +6,7 @@ from app.services.neo4j import driver
 
 def make_protocol(name):
     session = driver.session()
-    query = "create (n:protocol {id:apoc.create.uuid() , name:$name})  return n.id as id"
+    query = "create (n:Protocol {id:apoc.create.uuid() , name:$name})  return n.id as id"
     result = session.run(query,name=name)
     data = []
     for each in result:
@@ -70,7 +70,7 @@ def Get_Protocols_by_USer_Id(user_id):
 
 def get_standards_by_protocol_id(protocol_id):
     with driver.session() as session:
-        node = session.run("match (p:Protocol {id:$protocol_id}) - [r] -> (s:Standard) "
+        node = session.run("match (p:Protocol {id:$protocol_id}) <- [r] - (s:Standard) "
                            "return s",
                            protocol_id=protocol_id)
         result = []
@@ -80,7 +80,7 @@ def get_standards_by_protocol_id(protocol_id):
 
 def get_device_by_protocol_id(protocol_id):
     with driver.session() as session:
-        node = session.run("match (p:Protocol {id:$protocol_id}) - [r] -> (d:Device) "
+        node = session.run("match (p:Protocol {id:$protocol_id}) <- [r] - (d:Device) "
                            "return d",
                            protocol_id=protocol_id)
         result = []
@@ -88,9 +88,10 @@ def get_device_by_protocol_id(protocol_id):
             result.append(each['d'])
         return result
 
+
 def get_BOM_by_protocol_id(protocol_id):
     with driver.session() as session:
-        node = session.run("match (p:Protocol {id:$protocol_id}) - [r] -> (b:BOM) "
+        node = session.run("match (p:Protocol {id:$protocol_id}) <- [r] - (b:BOM) "
                            "return b",
                            protocol_id=protocol_id)
         result = []

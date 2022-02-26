@@ -85,7 +85,7 @@ def delete_standards_by_id(standard_id):
 def Get_Standard_by_USer_Id(user_id):
     with driver.session() as session:
         node = session.run("match (u:User{id:$user_id}) - [r*] -> (s:Standard)"
-                           " return s",
+                           " return DISTINCT s",
                            user_id=user_id)
         result = []
         for each in node.data():
@@ -121,3 +121,5 @@ def Get_Standard_by_USer_Id(user_id):
 #                 return {'Job': 'Done'}
 
 # --------------ended by Pouria - date : ------------
+#---------------started by hossein date : 2/23/2022-----------
+

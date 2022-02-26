@@ -98,8 +98,9 @@ def read_experiment(id):
         for every in tree_dict[each]:
             # print(tree_graph.nodes[every])
             protocols[each].append(tree_graph.nodes[every])
-    print(protocols)
-    del(protocols[0])
+    # del(protocols[0])
+    if 0 in protocols:
+        del(protocols[0])
     res = make_response(render_template('experiment.html',experiment=experiment,tree_levels=tree_levels,protocols=protocols))
     return res
 
@@ -109,6 +110,7 @@ def create_protocol():
     experiment = exFunc.getExperimentById(data["experiment_id"])
     protocol_id = protocolFunc.make_protocol(data['name'])
     my_tree = exFunc.getTree(data["experiment_id"])
+    print(my_tree)
     tree_level = data['tree_level']
     tree_level = int(tree_level)
     if len(my_tree[0]) ==0:
@@ -122,8 +124,20 @@ def create_protocol():
             parent_idies.append(my_tree[1].nodes[each]['properties']['id'])
         protocolFunc.connect_to_idies(protocol_id, parent_idies)
         tree_levels = list(my_tree[0].keys())
+    tree_dict = my_tree[0]
+    tree_graph = my_tree[1]
+    protocols = {}
+    for each in tree_dict:
+        protocols[each]=[]
+        for every in tree_dict[each]:
+            # print(tree_graph.nodes[every])
+            protocols[each].append(tree_graph.nodes[every])
+    # del(protocols[0])
+    print(protocols)
 
-    res = make_response(render_template('experiment.html',experiment=experiment,tree_levels=tree_levels))
+    if 0 in protocols:
+        del(protocols[0])
+    res = make_response(render_template('experiment.html',experiment=experiment,tree_levels=tree_levels,protocols=protocols))
     return res
 
 
@@ -309,10 +323,18 @@ def read_protocol(id):
     standards_list = protocolFunc.get_standards_by_protocol_id(id)
     device_list = protocolFunc.get_device_by_protocol_id(id)
     BOM_list = protocolFunc.get_BOM_by_protocol_id(id)
+    standards = sFunc.Get_Standard_by_USer_Id(userId)
+    user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
+    devices = deviceFunc.Get_Device_by_USer_Id(userId)
+
     resp = make_response(render_template('Protocol.html',
                                          standards_list=standards_list,
                                          device_list=device_list,
-                                         BOM_list=BOM_list))
+                                         BOM_list=BOM_list,
+                                         standards=standards,
+                                         protocol_id=id,
+                                         user_boms=user_boms,
+                                         devices=devices))
     return resp
 
 # ---------------ended by pouria - date : 7/2/2022 ---------------#
@@ -347,10 +369,81 @@ def add_BOMs():
     return resp
 
 
+#-----------------added by hossein 2/23/2022--------------
+@app.route('/add_standard_to_protocol', methods=['post'])
+def add_standard_to_protocol():
+    userId = request.cookies.get('User_id')
+    form = request.form.to_dict(flat=False)
+    id = form['protocol_id'][0]
+    protocolFunc.connect_to_idies(id,form['standard_list'])
+    standards_list = protocolFunc.get_standards_by_protocol_id(id)
+    device_list = protocolFunc.get_device_by_protocol_id(id)
+    BOM_list = protocolFunc.get_BOM_by_protocol_id(id)
+    standards = sFunc.Get_Standard_by_USer_Id(userId)
+    user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
+    devices = deviceFunc.Get_Device_by_USer_Id(userId)
+
+    resp = make_response(render_template('Protocol.html',
+                                         standards_list=standards_list,
+                                         device_list=device_list,
+                                         BOM_list=BOM_list,
+                                         standards=standards,
+                                         protocol_id=id,
+                                         user_boms=user_boms))
+
+    return resp
 
 
+@app.route('/add_bom_to_protocol', methods=['post'])
+def add_bom_to_protocol():
+    userId = request.cookies.get('User_id')
+    form = request.form.to_dict(flat=False)
+    id = form['protocol_id'][0]
+    protocolFunc.connect_to_idies(id,form['bom_list'])
+    standards_list = protocolFunc.get_standards_by_protocol_id(id)
+    device_list = protocolFunc.get_device_by_protocol_id(id)
+    BOM_list = protocolFunc.get_BOM_by_protocol_id(id)
+    standards = sFunc.Get_Standard_by_USer_Id(userId)
 
+    user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
+    devices = deviceFunc.Get_Device_by_USer_Id(userId)
 
+    resp = make_response(render_template('Protocol.html',
+                                         standards_list=standards_list,
+                                         device_list=device_list,
+                                         BOM_list=BOM_list,
+                                         standards=standards,
+                                         protocol_id=id,
+                                         user_boms=user_boms,
+                                         devices=devices))
+
+    return resp
+@app.route('/add_device_to_protocol', methods=['post'])
+def add_device_to_protocol():
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    form = request.form.to_dict(flat=False)
+    protocolFunc.connect_to_idies(form['protocol_id'][0], form['devices_id_List'])
+
+    protocol_id = form['protocol_id'][0]
+    standards_list = protocolFunc.get_standards_by_protocol_id(protocol_id)
+    device_list = protocolFunc.get_device_by_protocol_id(protocol_id)
+    BOM_list = protocolFunc.get_BOM_by_protocol_id(protocol_id)
+    devices = deviceFunc.Get_Device_by_USer_Id(userId)
+    standards = sFunc.Get_Standard_by_USer_Id(userId)
+
+    user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
+    resp = make_response(render_template('Protocol.html',
+                                         standards_list=standards_list,
+                                         device_list=device_list,
+                                         BOM_list=BOM_list,
+                                         devices=devices,
+                                         standards=standards,
+                                         protocol_id=protocol_id,
+                                         user_boms=user_boms))
+    return resp
 
 
 
