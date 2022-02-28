@@ -328,6 +328,7 @@ def read_protocol(id):
     user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
     devices = deviceFunc.Get_Device_by_USer_Id(userId)
     tasks = taskFunc.get_tasks_by_protocol_id(id)
+    place_names = placeFunc.find_places_by_device_id(protocolFunc.get_id_device_by_protocol_id(id))
     resp = make_response(render_template('Protocol.html',
                                          standards_list=standards_list,
                                          device_list=device_list,
@@ -336,7 +337,8 @@ def read_protocol(id):
                                          protocol_id=id,
                                          user_boms=user_boms,
                                          devices=devices,
-                                         tasks=tasks))
+                                         tasks=tasks,
+                                         place_names=place_names))
     return resp
 
 # ---------------ended by pouria - date : 7/2/2022 ---------------#
@@ -364,7 +366,11 @@ def add_BOMs():
     form = request.form.to_dict(flat=False)
     if 'BOM_id_List' not in form:
         form['BOM_id_List'] = []
-    bomFunc.Create_BOM(userId, form['BOM_id_List'], form['BOM_Name'][0], form['BOM_Description'][0])
+    BOM_value = form['BOM_Values'][0].split('-')
+    if form['BOM_Values'] == ['']:
+        BOM_value = form['BOM_Values'] = []
+    if len(form['BOM_id_List']) == len(BOM_value):
+        bomFunc.Create_BOM(userId, form['BOM_id_List'], form['BOM_Name'][0], form['BOM_Description'][0], BOM_value)
     bom_names = bomFunc.Get_BOMs_by_USer_Id(userId)
     resp = make_response(render_template('BOMs.html',
                          bom_names=bom_names))
@@ -385,6 +391,7 @@ def add_standard_to_protocol():
     user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
     devices = deviceFunc.Get_Device_by_USer_Id(userId)
     tasks = taskFunc.get_tasks_by_protocol_id(id)
+    place_names = placeFunc.find_places_by_device_id(protocolFunc.get_id_device_by_protocol_id(id))
     resp = make_response(render_template('Protocol.html',
                                          standards_list=standards_list,
                                          device_list=device_list,
@@ -393,7 +400,8 @@ def add_standard_to_protocol():
                                          protocol_id=id,
                                          user_boms=user_boms,
                                          devices=devices,
-                                         tasks=tasks))
+                                         tasks=tasks,
+                                         place_names=place_names))
 
     return resp
 
@@ -411,6 +419,7 @@ def add_bom_to_protocol():
     tasks = taskFunc.get_tasks_by_protocol_id(id)
     user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
     devices = deviceFunc.Get_Device_by_USer_Id(userId)
+    place_names = placeFunc.find_places_by_device_id(protocolFunc.get_id_device_by_protocol_id(id))
 
     resp = make_response(render_template('Protocol.html',
                                          standards_list=standards_list,
@@ -420,7 +429,8 @@ def add_bom_to_protocol():
                                          protocol_id=id,
                                          user_boms=user_boms,
                                          devices=devices,
-                                         tasks=tasks))
+                                         tasks=tasks,
+                                         place_names=place_names))
 
     return resp
 @app.route('/add_device_to_protocol', methods=['post'])
@@ -429,15 +439,17 @@ def add_device_to_protocol():
     if not userId:
         resp = make_response(render_template('login.html'))
         return resp
+
     form = request.form.to_dict(flat=False)
     protocolFunc.connect_to_idies(form['protocol_id'][0], form['devices_id_List'])
     protocol_id = form['protocol_id'][0]
+    place_names = placeFunc.find_places_by_device_id(protocolFunc.get_id_device_by_protocol_id(protocol_id))
     standards_list = protocolFunc.get_standards_by_protocol_id(protocol_id)
     device_list = protocolFunc.get_device_by_protocol_id(protocol_id)
     BOM_list = protocolFunc.get_BOM_by_protocol_id(protocol_id)
     devices = deviceFunc.Get_Device_by_USer_Id(userId)
     standards = sFunc.Get_Standard_by_USer_Id(userId)
-    tasks = taskFunc.get_tasks_by_protocol_id(id)
+    tasks = taskFunc.get_tasks_by_protocol_id(protocol_id)
     user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
     resp = make_response(render_template('Protocol.html',
                                          standards_list=standards_list,
@@ -446,7 +458,9 @@ def add_device_to_protocol():
                                          devices=devices,
                                          standards=standards,
                                          protocol_id=protocol_id,
-                                         user_boms=user_boms))
+                                         user_boms=user_boms,
+                                         tasks=tasks,
+                                         place_names=place_names))
     return resp
 
 
@@ -458,12 +472,10 @@ def add_task_to_protocol():
         resp = make_response(render_template('login.html'))
         return resp
     form = request.form.to_dict()
-    print(form)
     id = form['protocol_id']
-    print('id: ',id)
     taskFunc.create_tasks(form['task'].split('\r\n'), id)
     tasks = taskFunc.get_tasks_by_protocol_id(id)
-    print(tasks)
+    place_names = placeFunc.find_places_by_device_id(protocolFunc.get_id_device_by_protocol_id(id))
     standards_list = protocolFunc.get_standards_by_protocol_id(id)
     device_list = protocolFunc.get_device_by_protocol_id(id)
     BOM_list = protocolFunc.get_BOM_by_protocol_id(id)
@@ -478,7 +490,8 @@ def add_task_to_protocol():
                                          protocol_id=id,
                                          user_boms=user_boms,
                                          devices=devices,
-                                         tasks=tasks))
+                                         tasks=tasks,
+                                         place_names=place_names))
 
     return resp
 

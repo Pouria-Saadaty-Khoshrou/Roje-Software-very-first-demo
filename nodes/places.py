@@ -58,3 +58,16 @@ def Delete_Place_With_Id(place_id):
                     place_id=place_id)
 
 # ---------------ended by pouria - date : 7/2/2022 ---------------#
+
+def find_places_by_device_id(devices_list_id):
+    result = []
+    with driver.session() as session:
+        for device_id in devices_list_id:
+            node = session.run("match (d:Device {id:$device_id}) <- [r] - (p:Place) "
+                               "return p",
+                               device_id=device_id)
+
+            for each in node.data():
+                result.append(each['p'])
+        print(result)
+        return result

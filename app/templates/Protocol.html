@@ -6,7 +6,7 @@
     <div class="col-lg-6 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Standards table</h4>
+                <h4 class="card-title">Tasks table</h4>
                 <div class="table-responsive pt-3">
                     <table class="table table-dark">
                         <thead>
@@ -142,6 +142,9 @@
                             <th>
                                 Device Description
                             </th>
+                            <th>
+                                Place
+                            </th>
                         </tr>
                         </thead>
                         {% for each in device_list %}
@@ -152,6 +155,10 @@
                             </td>
                             <td>
                                 {{each['device_description']}}
+                            </td>
+
+                            <td>
+                                {{place_names[loop.index-1]['Place_name']}}
                             </td>
                         </tr>
                         </tbody>
