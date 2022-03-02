@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request, make_response
+from flask import render_template, request, make_response, redirect
 import json
 
 from nodes import users as uFunc
@@ -144,22 +144,25 @@ def create_protocol():
         for each in parent_list:
             parent_idies.append(my_tree[1].nodes[each]['properties']['id'])
         protocolFunc.connect_to_idies(protocol_id, parent_idies)
-        tree_levels = list(my_tree[0].keys())
-    tree_dict = my_tree[0]
-    tree_graph = my_tree[1]
-    protocols = {}
-    for each in tree_dict:
-        protocols[each] = []
-        for every in tree_dict[each]:
-            protocols[each].append(tree_graph.nodes[every])
-    # del(protocols[0])
+        #tree_levels = list(my_tree[0].keys())
+    # tree_dict = my_tree[0]
+    # tree_graph = my_tree[1]
+    # protocols = {}
+    # for each in tree_dict:
+    #     protocols[each] = []
+    #     for every in tree_dict[each]:
+    #         protocols[each].append(tree_graph.nodes[every])
+    # # del(protocols[0])
+    #
+    # if 0 in protocols:
+    #     del (protocols[0])
 
-    if 0 in protocols:
-        del (protocols[0])
+    #res = make_response(
+        #render_template('experiment.html', experiment=experiment, tree_levels=tree_levels, protocols=protocols))
 
-    res = make_response(
-        render_template('experiment.html', experiment=experiment, tree_levels=tree_levels, protocols=protocols))
-    return res
+    return redirect(f'/experiment/{data["experiment_id"]}')
+
+    #return res
 
 
 @app.route('/create_account', methods=['POST'])
@@ -296,46 +299,46 @@ def delete_device(id):
 # ---------------ended by pouria - date : 7/2/2022 ---------------#
 
 # ---------------started by pouria - date : 7/2/2022 ---------------#
-@app.route("/Protocols", methods=['GET'])
-def show_Porotocols():
-    userId = request.cookies.get('User_id')
-    if not userId:
-        resp = make_response(render_template('login.html'))
-        return resp
-
-    protocols = protocolFunc.Get_Protocols_by_USer_Id(userId)
-    devices = deviceFunc.Get_Device_by_USer_Id(userId)
-    standard = sFunc.Get_Standard_by_USer_Id(userId)
-    BOM = bomFunc.Get_BOMs_by_USer_Id(userId)
-
-    resp = make_response(render_template('Protocols.html',
-                                         protocols=protocols,
-                                         devices=devices,
-                                         standard=standard,
-                                         BOM=BOM))
-    return resp
-
-
-@app.route('/Protocols', methods=['post'])
-def add_protocols():
-    userId = request.cookies.get('User_id')
-    if not userId:
-        resp = make_response(render_template('login.html'))
-        return resp
-    form = request.form.to_dict()
-    protocolFunc.create_Protocol(form['Protocol_Name'], form['id'], userId)
-
-    protocols = protocolFunc.Get_Protocols_by_USer_Id(userId)
-    devices = deviceFunc.Get_Device_by_USer_Id(userId)
-    standard = sFunc.Get_Standard_by_USer_Id(userId)
-    BOM = bomFunc.Get_BOMs_by_USer_Id(userId)
-
-    resp = make_response(render_template('Protocols.html',
-                                         protocols=protocols,
-                                         devices=devices,
-                                         standard=standard,
-                                         BOM=BOM))
-    return resp
+# @app.route("/Protocols", methods=['GET'])
+# def show_Porotocols():
+#     userId = request.cookies.get('User_id')
+#     if not userId:
+#         resp = make_response(render_template('login.html'))
+#         return resp
+#
+#     protocols = protocolFunc.Get_Protocols_by_USer_Id(userId)
+#     devices = deviceFunc.Get_Device_by_USer_Id(userId)
+#     standard = sFunc.Get_Standard_by_USer_Id(userId)
+#     BOM = bomFunc.Get_BOMs_by_USer_Id(userId)
+#
+#     resp = make_response(render_template('Protocols.html',
+#                                          protocols=protocols,
+#                                          devices=devices,
+#                                          standard=standard,
+#                                          BOM=BOM))
+#     return resp
+#
+#
+# @app.route('/Protocols', methods=['post'])
+# def add_protocols():
+#     userId = request.cookies.get('User_id')
+#     if not userId:
+#         resp = make_response(render_template('login.html'))
+#         return resp
+#     form = request.form.to_dict()
+#     protocolFunc.create_Protocol(form['Protocol_Name'], form['id'], userId)
+#
+#     protocols = protocolFunc.Get_Protocols_by_USer_Id(userId)
+#     devices = deviceFunc.Get_Device_by_USer_Id(userId)
+#     standard = sFunc.Get_Standard_by_USer_Id(userId)
+#     BOM = bomFunc.Get_BOMs_by_USer_Id(userId)
+#
+#     resp = make_response(render_template('Protocols.html',
+#                                          protocols=protocols,
+#                                          devices=devices,
+#                                          standard=standard,
+#                                          BOM=BOM))
+#     return resp
 
 
 # ---------------ended by pouria - date : 7/2/2022 ---------------#
