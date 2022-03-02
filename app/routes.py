@@ -399,7 +399,6 @@ def add_BOMs():
     BOM_value = form['BOM_Values'][0].split('-')
     if form['BOM_Values'] == ['']:
         BOM_value = form['BOM_Values'] = []
-    print(form['Label'][0])
     if len(form['BOM_id_List']) == len(BOM_value):
         bomFunc.Create_BOM(userId,
                            form['BOM_id_List'],
@@ -419,58 +418,67 @@ def add_BOMs():
 @app.route('/add_standard_to_protocol', methods=['post'])
 def add_standard_to_protocol():
     userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
     form = request.form.to_dict(flat=False)
     id = form['protocol_id'][0]
     protocolFunc.connect_to_idies(id, form['standard_list'])
-    standards_list = protocolFunc.get_standards_by_protocol_id(id)
-    device_list = protocolFunc.get_device_by_protocol_id(id)
-    BOM_list = protocolFunc.get_BOM_by_protocol_id(id)
-    standards = sFunc.Get_Standard_by_USer_Id(userId)
-    user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
-    devices = deviceFunc.Get_Device_by_USer_Id(userId)
-    tasks = taskFunc.get_tasks_by_protocol_id(id)
-    place_names = placeFunc.find_places_by_device_id(protocolFunc.get_id_device_by_protocol_id(id))
-    resp = make_response(render_template('Protocol.html',
-                                         standards_list=standards_list,
-                                         device_list=device_list,
-                                         BOM_list=BOM_list,
-                                         standards=standards,
-                                         protocol_id=id,
-                                         user_boms=user_boms,
-                                         devices=devices,
-                                         tasks=tasks,
-                                         place_names=place_names))
 
-    return resp
+    return redirect(f'/Protocols/{id}')
+    # standards_list = protocolFunc.get_standards_by_protocol_id(id)
+    # device_list = protocolFunc.get_device_by_protocol_id(id)
+    # BOM_list = protocolFunc.get_BOM_by_protocol_id(id)
+    # standards = sFunc.Get_Standard_by_USer_Id(userId)
+    # user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
+    # devices = deviceFunc.Get_Device_by_USer_Id(userId)
+    # tasks = taskFunc.get_tasks_by_protocol_id(id)
+    # place_names = placeFunc.find_places_by_device_id(protocolFunc.get_id_device_by_protocol_id(id))
+    # resp = make_response(render_template('Protocol.html',
+    #                                      standards_list=standards_list,
+    #                                      device_list=device_list,
+    #                                      BOM_list=BOM_list,
+    #                                      standards=standards,
+    #                                      protocol_id=id,
+    #                                      user_boms=user_boms,
+    #                                      devices=devices,
+    #                                      tasks=tasks,
+    #                                      place_names=place_names))
+    #
+    # return resp
 
 
 @app.route('/add_bom_to_protocol', methods=['post'])
 def add_bom_to_protocol():
     userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
     form = request.form.to_dict(flat=False)
     id = form['protocol_id'][0]
     protocolFunc.connect_to_idies(id, form['bom_list'])
-    standards_list = protocolFunc.get_standards_by_protocol_id(id)
-    device_list = protocolFunc.get_device_by_protocol_id(id)
-    BOM_list = protocolFunc.get_BOM_by_protocol_id(id)
-    standards = sFunc.Get_Standard_by_USer_Id(userId)
-    tasks = taskFunc.get_tasks_by_protocol_id(id)
-    user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
-    devices = deviceFunc.Get_Device_by_USer_Id(userId)
-    place_names = placeFunc.find_places_by_device_id(protocolFunc.get_id_device_by_protocol_id(id))
-
-    resp = make_response(render_template('Protocol.html',
-                                         standards_list=standards_list,
-                                         device_list=device_list,
-                                         BOM_list=BOM_list,
-                                         standards=standards,
-                                         protocol_id=id,
-                                         user_boms=user_boms,
-                                         devices=devices,
-                                         tasks=tasks,
-                                         place_names=place_names))
-
-    return resp
+    return redirect(f'/Protocols/{id}')
+    # standards_list = protocolFunc.get_standards_by_protocol_id(id)
+    # device_list = protocolFunc.get_device_by_protocol_id(id)
+    # BOM_list = protocolFunc.get_BOM_by_protocol_id(id)
+    # standards = sFunc.Get_Standard_by_USer_Id(userId)
+    # tasks = taskFunc.get_tasks_by_protocol_id(id)
+    # user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
+    # devices = deviceFunc.Get_Device_by_USer_Id(userId)
+    # place_names = placeFunc.find_places_by_device_id(protocolFunc.get_id_device_by_protocol_id(id))
+    #
+    # resp = make_response(render_template('Protocol.html',
+    #                                      standards_list=standards_list,
+    #                                      device_list=device_list,
+    #                                      BOM_list=BOM_list,
+    #                                      standards=standards,
+    #                                      protocol_id=id,
+    #                                      user_boms=user_boms,
+    #                                      devices=devices,
+    #                                      tasks=tasks,
+    #                                      place_names=place_names))
+    #
+    # return resp
 
 
 @app.route('/add_device_to_protocol', methods=['post'])
@@ -483,25 +491,26 @@ def add_device_to_protocol():
     form = request.form.to_dict(flat=False)
     protocolFunc.connect_to_idies(form['protocol_id'][0], form['devices_id_List'])
     protocol_id = form['protocol_id'][0]
-    place_names = placeFunc.find_places_by_device_id(protocolFunc.get_id_device_by_protocol_id(protocol_id))
-    standards_list = protocolFunc.get_standards_by_protocol_id(protocol_id)
-    device_list = protocolFunc.get_device_by_protocol_id(protocol_id)
-    BOM_list = protocolFunc.get_BOM_by_protocol_id(protocol_id)
-    devices = deviceFunc.Get_Device_by_USer_Id(userId)
-    standards = sFunc.Get_Standard_by_USer_Id(userId)
-    tasks = taskFunc.get_tasks_by_protocol_id(protocol_id)
-    user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
-    resp = make_response(render_template('Protocol.html',
-                                         standards_list=standards_list,
-                                         device_list=device_list,
-                                         BOM_list=BOM_list,
-                                         devices=devices,
-                                         standards=standards,
-                                         protocol_id=protocol_id,
-                                         user_boms=user_boms,
-                                         tasks=tasks,
-                                         place_names=place_names))
-    return resp
+    return redirect(f'/Protocols/{protocol_id}')
+    # place_names = placeFunc.find_places_by_device_id(protocolFunc.get_id_device_by_protocol_id(protocol_id))
+    # standards_list = protocolFunc.get_standards_by_protocol_id(protocol_id)
+    # device_list = protocolFunc.get_device_by_protocol_id(protocol_id)
+    # BOM_list = protocolFunc.get_BOM_by_protocol_id(protocol_id)
+    # devices = deviceFunc.Get_Device_by_USer_Id(userId)
+    # standards = sFunc.Get_Standard_by_USer_Id(userId)
+    # tasks = taskFunc.get_tasks_by_protocol_id(protocol_id)
+    # user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
+    # resp = make_response(render_template('Protocol.html',
+    #                                      standards_list=standards_list,
+    #                                      device_list=device_list,
+    #                                      BOM_list=BOM_list,
+    #                                      devices=devices,
+    #                                      standards=standards,
+    #                                      protocol_id=protocol_id,
+    #                                      user_boms=user_boms,
+    #                                      tasks=tasks,
+    #                                      place_names=place_names))
+    # return resp
 
 
 @app.route('/add_task_to_protocol', methods=['post'])
@@ -513,23 +522,24 @@ def add_task_to_protocol():
     form = request.form.to_dict()
     id = form['protocol_id']
     taskFunc.create_tasks(form['task'].split('\r\n'), id)
-    tasks = taskFunc.get_tasks_by_protocol_id(id)
-    place_names = placeFunc.find_places_by_device_id(protocolFunc.get_id_device_by_protocol_id(id))
-    standards_list = protocolFunc.get_standards_by_protocol_id(id)
-    device_list = protocolFunc.get_device_by_protocol_id(id)
-    BOM_list = protocolFunc.get_BOM_by_protocol_id(id)
-    standards = sFunc.Get_Standard_by_USer_Id(userId)
-    user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
-    devices = deviceFunc.Get_Device_by_USer_Id(userId)
-    resp = make_response(render_template('Protocol.html',
-                                         standards_list=standards_list,
-                                         device_list=device_list,
-                                         BOM_list=BOM_list,
-                                         standards=standards,
-                                         protocol_id=id,
-                                         user_boms=user_boms,
-                                         devices=devices,
-                                         tasks=tasks,
-                                         place_names=place_names))
-
-    return resp
+    return redirect(f'/Protocols/{id}')
+    # tasks = taskFunc.get_tasks_by_protocol_id(id)
+    # place_names = placeFunc.find_places_by_device_id(protocolFunc.get_id_device_by_protocol_id(id))
+    # standards_list = protocolFunc.get_standards_by_protocol_id(id)
+    # device_list = protocolFunc.get_device_by_protocol_id(id)
+    # BOM_list = protocolFunc.get_BOM_by_protocol_id(id)
+    # standards = sFunc.Get_Standard_by_USer_Id(userId)
+    # user_boms = bomFunc.Get_BOMs_by_USer_Id(userId)
+    # devices = deviceFunc.Get_Device_by_USer_Id(userId)
+    # resp = make_response(render_template('Protocol.html',
+    #                                      standards_list=standards_list,
+    #                                      device_list=device_list,
+    #                                      BOM_list=BOM_list,
+    #                                      standards=standards,
+    #                                      protocol_id=id,
+    #                                      user_boms=user_boms,
+    #                                      devices=devices,
+    #                                      tasks=tasks,
+    #                                      place_names=place_names))
+    #
+    # return resp
