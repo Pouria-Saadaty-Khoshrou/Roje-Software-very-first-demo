@@ -208,6 +208,15 @@
                             <th>
                                 Description
                             </th>
+                            <th>
+                                PH
+                            </th>
+                            <th>
+                                Volume
+                            </th>
+                            <th>
+                                Type Of Material
+                            </th>
                         </tr>
                         </thead>
                         {% for each in BOM_list %}
@@ -218,6 +227,15 @@
                             </td>
                             <td>
                                 {{each['description']}}
+                            </td>
+                            <td>
+                                {{each['ph']}}
+                            </td>
+                            <td>
+                                {{each['volume']}}
+                            </td>
+                            <td>
+                                {{each['Type_of_material']}}
                             </td>
                         </tr>
                         </tbody>

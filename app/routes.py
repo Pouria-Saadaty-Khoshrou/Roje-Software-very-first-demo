@@ -369,8 +369,16 @@ def add_BOMs():
     BOM_value = form['BOM_Values'][0].split('-')
     if form['BOM_Values'] == ['']:
         BOM_value = form['BOM_Values'] = []
+    print(form['Label'][0])
     if len(form['BOM_id_List']) == len(BOM_value):
-        bomFunc.Create_BOM(userId, form['BOM_id_List'], form['BOM_Name'][0], form['BOM_Description'][0], BOM_value)
+        bomFunc.Create_BOM(userId,
+                           form['BOM_id_List'],
+                           form['BOM_Name'][0],
+                           form['BOM_Description'][0],
+                           BOM_value,
+                           form['ph'][0],
+                           form['volume'][0],
+                           form['Type_of_material'][0])
     bom_names = bomFunc.Get_BOMs_by_USer_Id(userId)
     resp = make_response(render_template('BOMs.html',
                          bom_names=bom_names))

@@ -13,19 +13,25 @@ def Existance_of_BOM(name):
             return True
 
 
-def Create_BOM(user_id, list_id, name, description, list_values):
+def Create_BOM(user_id, list_id, name, description, list_values, ph, volume, Type_of_material):
     if not Existance_of_BOM(name):
         with driver.session() as session:
             node = session.run("match (u:User {id:$user_id}) "
-                               "create (b:BOM{BOM_name:$name, "
+                               "create (b:BOM {BOM_name:$name, "
                                "description:$description, "
+                               "ph:$ph, "
+                               "volume:$volume, "
+                               "Type_of_material:$Type_of_material, "
                                "id:apoc.create.uuid(), "
                                "created_at:datetime()}), "
                                "(u) - [:Created_at{Created_at:datetime()}] -> (b) "
                                "return b.id",
                                user_id=user_id,
                                name=name,
-                               description=description)
+                               description=description,
+                               ph=ph,
+                               volume=volume,
+                               Type_of_material=Type_of_material)
             BOM_id = node.data()[0]['b.id']
             if list_id != [] and list_values != []:
                 connect_new_bom_to_other_bom(BOM_id, list_id, list_values)
