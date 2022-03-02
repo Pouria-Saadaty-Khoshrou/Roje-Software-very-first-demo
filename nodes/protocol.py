@@ -88,6 +88,15 @@ def get_device_by_protocol_id(protocol_id):
             result.append(each['d'])
         return result
 
+def get_id_device_by_protocol_id(protocol_id):
+    with driver.session() as session:
+        node = session.run("match (p:Protocol {id:$protocol_id}) <- [r] - (d:Device) "
+                           "return d.id",
+                           protocol_id=protocol_id)
+        result = []
+        for each in node.data():
+            result.append(each['d.id'])
+        return result
 
 def get_BOM_by_protocol_id(protocol_id):
     with driver.session() as session:

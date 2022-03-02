@@ -13,34 +13,40 @@ def Existance_of_BOM(name):
             return True
 
 
-def Create_BOM(user_id, list_id, name, description):
+def Create_BOM(user_id, list_id, name, description, list_values, ph, volume, Type_of_material):
     if not Existance_of_BOM(name):
         with driver.session() as session:
             node = session.run("match (u:User {id:$user_id}) "
-                               "create (b:BOM{BOM_name:$name, "
+                               "create (b:BOM {BOM_name:$name, "
                                "description:$description, "
+                               "ph:$ph, "
+                               "volume:$volume, "
+                               "Type_of_material:$Type_of_material, "
                                "id:apoc.create.uuid(), "
                                "created_at:datetime()}), "
                                "(u) - [:Created_at{Created_at:datetime()}] -> (b) "
                                "return b.id",
                                user_id=user_id,
                                name=name,
-                               description=description)
+                               description=description,
+                               ph=ph,
+                               volume=volume,
+                               Type_of_material=Type_of_material)
             BOM_id = node.data()[0]['b.id']
-            if list_id != []:
-                connect_new_bom_to_other_bom(BOM_id, list_id)
-
-        BOM_id = node.data()
+            if list_id != [] and list_values != []:
+                connect_new_bom_to_other_bom(BOM_id, list_id, list_values)
 
 
-def connect_new_bom_to_other_bom(BOM_id, list_id):
+def connect_new_bom_to_other_bom(BOM_id, list_id, list_values):
     with driver.session() as session:
-        for B_id in list_id:
+        for counter in range(len(list_id)):
             session.run("match (main_bom:BOM{id:$B_id}), "
                         "(new_bom:BOM{id:$BOM_id})"
-                        "create (main_bom) - [:Created_at{Created_at:datetime()}] -> (new_bom)",
-                        B_id=B_id,
+                        "create (main_bom) - [:Gives_us{Created_at:datetime(), value:$B_value}] -> (new_bom)",
+                        B_id=list_id[counter],
+                        B_value=list_values[counter],
                         BOM_id=BOM_id)
+
 
 def Get_BOMs_by_USer_Id(user_id):
     with driver.session() as session:

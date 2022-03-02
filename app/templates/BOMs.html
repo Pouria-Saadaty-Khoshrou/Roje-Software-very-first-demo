@@ -32,6 +32,25 @@
                         <input type="text" class="form-control" id="exampleInputUsername1" name="BOM_Description" placeholder="BOM Description ex : 100% water">
                     </div>
 
+                    <div class="form-group">
+                        <label for="exampleInputUsername1">BOM PH</label>
+                        <input type="number" step="0.01" class="form-control" id="exampleInputUsername1" name="ph" placeholder="BOM ph ex : 7">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleInputUsername1">BOM Volume</label>
+                        <input type="text" step="0.01" class="form-control" id="exampleInputUsername1" name="volume" placeholder="BOM volume ex : 7.65gr">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleInputUsername1">BOM type of material</label>
+                        <select class="js-example-basic-single w-100 select2-hidden-accessible" name="Type_of_material" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                            <option value="Liquid" data-select2-id="3">Liquid</option>
+                            <option value="Solid" data-select2-id="3">Solid</option>
+                        </select>
+                    </div>
+
+
                     <div class="form-group" data-select2-id="7">
                         <label>BOM List</label>
                         <select class="js-example-basic-multiple w-100 select2-hidden-accessible" multiple="" name="BOM_id_List" tabindex="-1" aria-hidden="true">
@@ -41,6 +60,11 @@
                             {% endfor %}
 
                         </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleInputUsername1">BOMs Values</label>
+                        <input type="text" class="form-control" id="exampleInputUsername1" name="BOM_Values" placeholder="BOM values in ml ex : 45ml-10kg-68l">
                     </div>
 <!--                        {% for each in BOM %}-->
 <!--                            <option value="{{each['id']}}" data-select2-id="3">BOM: {{each['device_name']}}</option>-->
