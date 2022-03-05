@@ -1,0 +1,52 @@
+<!--started by pouria - date : 7/2/2022-->
+{% include 'header.html' %}
+
+
+
+    <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Tasks table</h4>
+
+                        <table class="table table-dark">
+                            <thead>
+                            <tr>
+                                <th>
+                                    Result Name
+                                </th>
+                                <th>
+                                    Experiment Name
+                                </th>
+                                <th>
+                                    Result Content
+                                </th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for each in results %}
+                            <tr>
+
+                                <td>
+                                    {{each['result_name']}}
+                                </td>
+                                <td>
+                                    {{each['experiment_name']}}
+                                </td>
+                                <td>
+                                    {{each['content']}}
+                                </td>
+
+                            </tr>
+                            {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+
+            </div>
+        </div>
+    </div>
+
+{% include 'footer.html' %}

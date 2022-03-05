@@ -1,13 +1,5 @@
 from app.services.neo4j import driver
 
-def connect_to_idies(nodeId,idies:list):
-    session = driver.session()
-    query = "match (firstNode {id:$id}), (secondNode {id:$secId}) " \
-            "with firstNode , secondNode " \
-            "create (firstNode)<-[:partOf]-(secondNode) "
-    for each in idies:
-        session.run(query,id=nodeId,secId=each)
-    session.close()
 
 def create_result(experiment_id, result_name, text):
 
@@ -22,3 +14,14 @@ def create_result(experiment_id, result_name, text):
                            experiment_id=experiment_id,
                            text=text,
                            result_name=result_name)
+
+def find_result_by_experiment_id(experiment_id):
+
+    with driver.session() as session:
+        node = session.run("match (e:Experiment {id:$experiment_id}) - [rel] -> (r:Result)"
+                           " return r",
+                           experiment_id=experiment_id)
+        result = []
+        for each in node.data():
+            result.append(each['r'])
+        return result

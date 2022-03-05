@@ -132,6 +132,18 @@ def add_results():
     return redirect(f'/experiment/{form["experiment_id"]}')
 
 
+@app.route('/Results/<id>', methods=['GET'])
+def show_results(id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    results = resultFunc.find_result_by_experiment_id(id)
+    print(results)
+    res = make_response(render_template('/Results.html', results=results))
+    return res
+
+
 
 
 
