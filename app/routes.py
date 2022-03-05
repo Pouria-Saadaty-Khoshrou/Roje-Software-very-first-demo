@@ -15,7 +15,7 @@ from nodes import devices as deviceFunc
 from nodes import protocol as protocolFunc
 from nodes import BOMs as bomFunc
 from nodes import tasks as taskFunc
-
+from nodes import Results as resultFunc
 
 @app.route('/', methods=['GET'])
 def index():
@@ -116,9 +116,23 @@ def read_experiment(id):
     # del(protocols[0])
     if 0 in protocols:
         del (protocols[0])
+    experiment_id=id
     res = make_response(
-        render_template('experiment.html', experiment=experiment, tree_levels=tree_levels, protocols=protocols))
+        render_template('experiment.html', experiment=experiment, tree_levels=tree_levels, protocols=protocols, experiment_id=experiment_id))
     return res
+
+@app.route('/add_results', methods=['POST'])
+def add_results():
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    form = request.form.to_dict()
+    resultFunc.create_result(form["experiment_id"], form['result_name'], form['content'])
+    return redirect(f'/experiment/{form["experiment_id"]}')
+
+
+
 
 
 @app.route('/protocols', methods=['POST'])

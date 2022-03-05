@@ -47,10 +47,13 @@
                     <div class="form-group" data-select2-id="7">
                         <label>BOM List</label>
                         <form class="forms-sample" action="/add_task_to_protocol" method="post">
-
-                            <textarea rows = "25" cols = "60" name = "task", placeholder="Enter the tasks"></textarea>
+                            <div class="form-group">
+                                <textarea rows = "25" cols = "60" name = "task", placeholder="Enter the tasks"></textarea>
+                            </div>
                             <input type="hidden" name="protocol_id" value="{{ protocol_id }}">
-                            <button type="submit" class="btn btn-primary me-2">Submit</button>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary me-2">Submit</button>
+                            </div>
 
                         </form>
 
