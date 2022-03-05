@@ -22,19 +22,20 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">protocol form</h4>
-                    <p class="card-description">
-                        add a protocol
-                    </p>
                     <form class="forms-sample" action="/protocols" method="post">
                         <div class="form-group">
-                            <label for="exampleInputUsername1">name</label>
-                            <input type="text" class="form-control" id="name" name="name"
-                                   placeholder="Protocol Name">
-                            <select class="form-control" id="exampleFormControlSelect2" name="tree_level">
-                                {% for each in tree_levels %}
-                                  <option>{{ each }}</option>
-                                {% endfor %}
-                            </select>
+                            <label for="exampleInputUsername1">Protocol Name</label>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="name" name="name"
+                                    placeholder="Protocol Name">
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" id="exampleFormControlSelect2" name="tree_level">
+                                    {% for each in tree_levels %}
+                                      <option>{{ each }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                             <input type="hidden" class="form-control" name="experiment_id" value="{{experiment['id']}}">
                         </div>
 
