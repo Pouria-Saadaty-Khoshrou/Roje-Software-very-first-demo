@@ -16,6 +16,7 @@ from nodes import protocol as protocolFunc
 from nodes import BOMs as bomFunc
 from nodes import tasks as taskFunc
 from nodes import Results as resultFunc
+from nodes import Folders_and_Files as folderFunc
 
 @app.route('/', methods=['GET'])
 def index():
@@ -569,3 +570,46 @@ def add_task_to_protocol():
     #                                      place_names=place_names))
     #
     # return resp
+
+@app.route("/Folders", methods=['GET'])
+def show_Folders():
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    folder_names = folderFunc.get_folder_name()
+    resp = make_response(render_template('Folders.html',
+                         folder_names=folder_names))
+    return resp
+
+
+@app.route("/Folders", methods=['POST'])
+def add_Folders():
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    form = request.form.to_dict()
+    if form['file_or_folder'] == 'Folder':
+        print(form)
+        if form['Top Folder'] == '[]':
+            folderFunc.Create_Folder(form['Folder_or_File_name'], [])
+        else:
+            folderFunc.Create_Folder(form['Folder_or_File_name'], form['Top Folder'])
+    else:
+        folderFunc.Create_File(form['Folder_or_File_name'],form['file_content'], form['Top Folder'])
+
+    return redirect(f'/Folders')
+
+@app.route("/Folder/<id>", methods=['GET'])
+def what_inside_folders(id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    a = folderFunc.show_what_inside_folder(id)
+    print(a)
+    folder_names = folderFunc.get_folder_name()
+    resp = make_response(render_template('Folders.html',
+                         folder_names=folder_names))
+    return resp
