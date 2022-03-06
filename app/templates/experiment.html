@@ -22,19 +22,20 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">protocol form</h4>
-                    <p class="card-description">
-                        add a protocol
-                    </p>
                     <form class="forms-sample" action="/protocols" method="post">
                         <div class="form-group">
-                            <label for="exampleInputUsername1">name</label>
-                            <input type="text" class="form-control" id="name" name="name"
-                                   placeholder="Protocol Name">
-                            <select class="form-control" id="exampleFormControlSelect2" name="tree_level">
-                                {% for each in tree_levels %}
-                                  <option>{{ each }}</option>
-                                {% endfor %}
-                            </select>
+                            <label for="exampleInputUsername1">Protocol Name</label>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="name" name="name"
+                                    placeholder="Protocol Name">
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" id="exampleFormControlSelect2" name="tree_level">
+                                    {% for each in tree_levels %}
+                                      <option>{{ each }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                             <input type="hidden" class="form-control" name="experiment_id" value="{{experiment['id']}}">
                         </div>
 
@@ -76,6 +77,27 @@
             </div>
         </div>
 
-    </div>
-</div>
+        <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Result form</h4>
+                    <form class="forms-sample" action="/add_results" method="post">
+                            <div class="form-group">
+                                <label for="exampleInputUsername1">Result name</label>
+                                <input type="text" class="form-control" id="exampleInputUsername1" name="result_name" placeholder="Result Name: ">
+                            </div>
+                            <div class="form-group">
+                                <textarea rows = "25" cols = "60" name = "content", placeholder="Enter the Results"></textarea>
+                            </div>
+                                <input type="hidden" name="experiment_id" value="{{ experiment_id }}">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary me-2">Submit</button>
+                                <a type="button" class="btn btn-primary me-2" href="/Results/{{ experiment_id }}">Show Results </a>
+                            </div>
+                    </form>
+<!--                    <button onclick="/Results/{{ experiment_id }}" class="btn btn-primary me-2">Show Results</button>-->
+
+                </div>
+            </div>
+        </div>
 {% include 'footer.html' %}
