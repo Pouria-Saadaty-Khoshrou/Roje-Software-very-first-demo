@@ -1,5 +1,6 @@
 {% include 'header.html' %}
 
+
 <div class="col-md-6">
     <div class="card-body">
         <h4 class="card-title">Folders</h4>
@@ -17,7 +18,7 @@
             <h4 class="card-title">New Folder Form</h4>
 
 
-            <form class="forms-sample" action="/Folders" method="post">
+            <form class="forms-sample" action="/Folders" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <div class="form-group">
                         <label for="exampleInputUsername1">BOM type of material</label>
@@ -30,14 +31,18 @@
                     <label for="exampleInputUsername1">Folder or File name</label>
                     <input type="text" class="form-control" id="exampleInputUsername1" name="Folder_or_File_name" placeholder="like my computer">
                 </div>
-                <div class="form-group">
-                    <textarea rows = "10" cols = "70" name = "file_content", placeholder="..."></textarea>
+<!--                <div class="form-group">-->
+<!--                    <textarea rows = "10" cols = "70" name = "file_content", placeholder="..."></textarea>-->
+<!--                </div>-->
+                <div class="input-group col-xs-12">
+                    <input type="file" class="form-control file-upload-info" placeholder="Upload Image" name="file">
                 </div>
                 <div class="form-group">
                         <label for="exampleInputUsername1">Top Folder</label>
 
-                        <select class="js-example-basic-single w-100 select2-hidden-accessible" name="Top Folder" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                        <select class="js-example-basic-single w-100 select2-hidden-accessible" name="Top_Folder" data-select2-id="1" tabindex="-1" aria-hidden="true">
 <!--                            <option value={{[]}} data-select2-id="3">      </option>-->
+                            <option value='[]' data-select2-id="3">... </option>
                             {% for each in folder_names %}
                                 <option value="{{each['id']}}" data-select2-id="3">{{ each['name'] }}</option>
                             {% endfor %}
@@ -48,5 +53,6 @@
         </div>
     </div>
 </div>
+
 
 {% include 'footer.html' %}

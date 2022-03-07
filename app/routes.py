@@ -1,6 +1,11 @@
 from app import app
 from flask import render_template, request, make_response, redirect
+from flask_wtf import FlaskForm
+from wtforms import FileField
 import json
+import os
+from datetime import date
+
 
 from nodes import users as uFunc
 from nodes import projects as pFunc
@@ -589,16 +594,35 @@ def add_Folders():
     if not userId:
         resp = make_response(render_template('login.html'))
         return resp
-    form = request.form.to_dict()
-    if form['file_or_folder'] == 'Folder':
-        print(form)
-        if form['Top Folder'] == '[]':
-            folderFunc.Create_Folder(form['Folder_or_File_name'], [])
-        else:
-            folderFunc.Create_Folder(form['Folder_or_File_name'], form['Top Folder'])
-    else:
-        folderFunc.Create_File(form['Folder_or_File_name'],form['file_content'], form['Top Folder'])
 
+    form = request.form.to_dict()
+    print(form)
+    if 'Top_Folder' not in form:
+        form['Top_Folder'] = '[]'
+
+    if form['file_or_folder'] == 'Folder':
+
+        if form['Top_Folder'] == '[]':
+            folderFunc.Create_Folder(form['Folder_or_File_name'], [], userId)
+        else:
+            folderFunc.Create_Folder(form['Folder_or_File_name'], form['Top_Folder'], userId)
+    else:
+
+        today = str(date.today()).split('-')
+        day = today[-1]
+        month = today[1]
+        year = today[0]
+        path = f"C:\\Users\\Sir_PouRia\\Desktop\\Roje Enterprise Software\\folders\\{year}\\{month}\\{day}"
+        if not os.path.isdir(path):
+            os.makedirs(path)
+        file = request.files['file']
+        if file:
+            file_format = str(file.filename).split('.')[-1]
+            app.config['UPLOAD_FOLDER'] = path
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], form['Folder_or_File_name'] + '.' + file_format))
+            final_path = path+'\\'+form['Folder_or_File_name'] + '.' + file_format
+
+            folderFunc.Create_File(form['Folder_or_File_name'],final_path, form['Top_Folder'], userId)
     return redirect(f'/Folders')
 
 @app.route("/Folder/<id>", methods=['GET'])
