@@ -134,7 +134,30 @@ def add_results():
         resp = make_response(render_template('login.html'))
         return resp
     form = request.form.to_dict()
-    resultFunc.create_result(form["experiment_id"], form['result_name'], form['content'])
+    #**************
+
+    if not resultFunc.existance_of_result_name(form['result_name']):
+        result_id = resultFunc.create_result(form["experiment_id"], form['result_name'], form['content'])
+        today = str(date.today()).split('-')
+        day = today[-1]
+        month = today[1]
+        year = today[0]
+        path = f"C:\\Users\\Sir_PouRia\\Desktop\\Roje Enterprise Software\\folders\\{year}\\{month}\\{day}\\{form['result_name']}"
+        if not os.path.isdir(path):
+            os.makedirs(path)
+        file = request.files.getlist('file')
+        if file:
+            for file in file:
+                app.config['UPLOAD_FOLDER'] = path
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+                final_path = path + '\\' + file.filename
+                folderFunc.add_file_to_result(final_path, form['result_name'], result_id)
+           # print(result_id)
+
+
+        #**************
+
+
     return redirect(f'/experiment/{form["experiment_id"]}')
 
 
@@ -145,7 +168,6 @@ def show_results(id):
         resp = make_response(render_template('login.html'))
         return resp
     results = resultFunc.find_result_by_experiment_id(id)
-    print(results)
     res = make_response(render_template('/Results.html', results=results))
     return res
 

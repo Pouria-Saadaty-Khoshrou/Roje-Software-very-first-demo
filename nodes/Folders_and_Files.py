@@ -25,31 +25,39 @@ def Create_Folder(folder_name, top_folder, userId):
 
 
 def connect_file_or_folder_to_folder(file_or_folder_id, top_folder_id):
+    # with driver.session() as session:
+    #     node = session.run(
+    #         "match (top:Folder {id:$top_folder_id}), "
+    #         "(f {id:$file_or_folder_id}) "
+    #         "create (top) - [:Created_at{Created_at:datetime()}] -> (f)",
+    #         top_folder_id=top_folder_id,
+    #         file_or_folder_id=file_or_folder_id)
+
     with driver.session() as session:
         node = session.run(
-            "match (top:Folder {id:$top_folder_id}), "
+            "match (top{id:$top_folder_id}), "
             "(f {id:$file_or_folder_id}) "
             "create (top) - [:Created_at{Created_at:datetime()}] -> (f)",
             top_folder_id=top_folder_id,
             file_or_folder_id=file_or_folder_id)
 
 
-def Create_File(file_name, content, top_folder, userId):
+
+def Create_File(file_name, path, top_folder, userId):
     with driver.session() as session:
         node = session.run(
             "create (f:File {name:$file_name, "
-            " content:$content,"
+            " path:$path,"
             " id: apoc.create.uuid(),"
             " created_at:datetime()})"
             " return f.id",
             file_name=file_name,
-            content=content)
+            path=path)
         node = node.data()[0]['f.id']
-        print('top_folder = ', top_folder)
+
         if top_folder == '[]':
             with driver.session() as session:
-                print('User_id : ', userId)
-                print('node id : ', node)
+
                 session.run(
                     "match (u:User{id:$userId}), (f:File {id:$node})"
                     " create  (u) - [:Created_at{Created_at:datetime()}] -> (f)",
@@ -79,3 +87,15 @@ def get_folder_name():
         for each in node.data():
             result.append(each['f'])
         return result
+
+def add_file_to_result(path, file_name, result_id):
+    with driver.session() as session:
+        node = session.run(
+            "create (f:File {name:$file_name, "
+            " path:$path,"
+            " id: apoc.create.uuid(),"
+            " created_at:datetime()})"
+            " return f.id",
+            file_name=file_name,
+            path=path)
+        connect_file_or_folder_to_folder(node.data()[0]['f.id'], result_id)

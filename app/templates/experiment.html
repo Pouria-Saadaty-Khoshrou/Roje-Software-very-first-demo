@@ -81,7 +81,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Result form</h4>
-                    <form class="forms-sample" action="/add_results" method="post">
+                    <form class="forms-sample" action="/add_results" method="post" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="exampleInputUsername1">Result name</label>
                                 <input type="text" class="form-control" id="exampleInputUsername1" name="result_name" placeholder="Result Name: ">
@@ -89,6 +89,12 @@
                             <div class="form-group">
                                 <textarea rows = "25" cols = "60" name = "content", placeholder="Enter the Results"></textarea>
                             </div>
+                            <label for="exampleInputUsername1">Upload Documents</label>
+                            <div class="form-group">
+                                <input type="file" class="form-control file-upload-info" placeholder="Upload Image" name="file" multiple>
+                            </div>
+
+
                                 <input type="hidden" name="experiment_id" value="{{ experiment_id }}">
                             <div class="form-group">
                                 <button type="submit" class="btn btn-primary me-2">Submit</button>
