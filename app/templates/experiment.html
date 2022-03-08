@@ -27,12 +27,12 @@
                             <label for="exampleInputUsername1">Protocol Name</label>
                             <div class="form-group">
                                 <input type="text" class="form-control" id="name" name="name"
-                                    placeholder="Protocol Name">
+                                       placeholder="Protocol Name">
                             </div>
                             <div class="form-group">
                                 <select class="form-control" id="exampleFormControlSelect2" name="tree_level">
                                     {% for each in tree_levels %}
-                                      <option>{{ each }}</option>
+                                    <option>{{ each }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -45,6 +45,38 @@
             </div>
 
         </div>
+
+                <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Result form</h4>
+                    <form class="forms-sample" action="/add_results" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="exampleInputUsername1">Result name</label>
+                            <input type="text" class="form-control" id="exampleInputUsername1" name="result_name"
+                                   placeholder="Result Name: ">
+                        </div>
+                        <div class="form-group">
+                            <textarea rows="25" cols="60" name="content" , placeholder="Enter the Results"></textarea>
+                        </div>
+                        <label for="exampleInputUsername1">Upload Documents</label>
+                        <div class="form-group">
+                            <input type="file" class="form-control file-upload-info" placeholder="Upload Image"
+                                   name="file" multiple>
+                        </div>
+
+
+                        <input type="hidden" name="experiment_id" value="{{ experiment_id }}">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary me-2">Submit</button>
+                        </div>
+                    </form>
+                    <!--                    <button onclick="/Results/{{ experiment_id }}" class="btn btn-primary me-2">Show Results</button>-->
+
+                </div>
+            </div>
+        </div>
+
         <div class="col-lg-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
@@ -60,14 +92,14 @@
                             </thead>
                             <tbody>
                             {% for each in protocols %}
-                                <tr>
+                            <tr>
                                 <td>{{each}}</td>
-                                    <td>
+                                <td>
                                     {% for every in protocols[each] %}
-                                        <a href="/Protocols/{{every['properties']['id']}}"><label class="badge badge-info">{{every['properties']['name']}}</label></a>
+                                    <a href="/Protocols/{{every['properties']['id']}}"><label class="badge badge-info">{{every['properties']['name']}}</label></a>
                                     {% endfor %}
-                                    </td>
-                                </tr>
+                                </td>
+                            </tr>
 
                             {% endfor %}
                             </tbody>
@@ -77,33 +109,32 @@
             </div>
         </div>
 
-        <div class="col-md-6 grid-margin stretch-card">
+
+
+        <div class="col-lg-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Result form</h4>
-                    <form class="forms-sample" action="/add_results" method="post" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <label for="exampleInputUsername1">Result name</label>
-                                <input type="text" class="form-control" id="exampleInputUsername1" name="result_name" placeholder="Result Name: ">
-                            </div>
-                            <div class="form-group">
-                                <textarea rows = "25" cols = "60" name = "content", placeholder="Enter the Results"></textarea>
-                            </div>
-                            <label for="exampleInputUsername1">Upload Documents</label>
-                            <div class="form-group">
-                                <input type="file" class="form-control file-upload-info" placeholder="Upload Image" name="file" multiple>
-                            </div>
+                    <h4 class="card-title">Results</h4>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Result Names</th>
+                            </tr>
+                            </thead>
+                            {% for each in results %}
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <a href="/Results/{{each['id']}}"><label class="badge badge-info">{{ each['result_name' ]}}</label></a>
+                                </td>
+                            </tr>
 
-
-                                <input type="hidden" name="experiment_id" value="{{ experiment_id }}">
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-primary me-2">Submit</button>
-                                <a type="button" class="btn btn-primary me-2" href="/Results/{{ experiment_id }}">Show Results </a>
-                            </div>
-                    </form>
-<!--                    <button onclick="/Results/{{ experiment_id }}" class="btn btn-primary me-2">Show Results</button>-->
-
+                            </tbody>
+                            {% endfor %}
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-{% include 'footer.html' %}
+        {% include 'footer.html' %}

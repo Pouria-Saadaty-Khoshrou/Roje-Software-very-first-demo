@@ -123,8 +123,16 @@ def read_experiment(id):
     if 0 in protocols:
         del (protocols[0])
     experiment_id=id
+    results = resultFunc.find_result_by_experiment_id(id)
+
     res = make_response(
-        render_template('experiment.html', experiment=experiment, tree_levels=tree_levels, protocols=protocols, experiment_id=experiment_id))
+        render_template('experiment.html',
+                        experiment=experiment,
+                        tree_levels=tree_levels,
+                        protocols=protocols,
+                        experiment_id=experiment_id,
+                        results=results))
+
     return res
 
 @app.route('/add_results', methods=['POST'])
@@ -135,23 +143,24 @@ def add_results():
         return resp
     form = request.form.to_dict()
     #**************
+    if form['result_name'] != '' and form['content'] != '':
+        if not resultFunc.existance_of_result_name(form['result_name']):
+            result_id = resultFunc.create_result(form["experiment_id"], form['result_name'], form['content'])
+            today = str(date.today()).split('-')
+            day = today[-1]
+            month = today[1]
+            year = today[0]
+            path = f"C:\\Users\\Sir_PouRia\\Desktop\\Roje Enterprise Software\\static\\{year}\\{month}\\{day}\\{form['result_name']}"
+            if not os.path.isdir(path):
+                os.makedirs(path)
+            file = request.files.getlist('file')
+            if file:
+                for file in file:
+                    app.config['UPLOAD_FOLDER'] = path
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+                    final_path = path + '\\' + file.filename
+                    folderFunc.add_file_to_result(final_path, file.filename, result_id)
 
-    if not resultFunc.existance_of_result_name(form['result_name']):
-        result_id = resultFunc.create_result(form["experiment_id"], form['result_name'], form['content'])
-        today = str(date.today()).split('-')
-        day = today[-1]
-        month = today[1]
-        year = today[0]
-        path = f"C:\\Users\\Sir_PouRia\\Desktop\\Roje Enterprise Software\\folders\\{year}\\{month}\\{day}\\{form['result_name']}"
-        if not os.path.isdir(path):
-            os.makedirs(path)
-        file = request.files.getlist('file')
-        if file:
-            for file in file:
-                app.config['UPLOAD_FOLDER'] = path
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
-                final_path = path + '\\' + file.filename
-                folderFunc.add_file_to_result(final_path, form['result_name'], result_id)
            # print(result_id)
 
 
@@ -167,8 +176,22 @@ def show_results(id):
     if not userId:
         resp = make_response(render_template('login.html'))
         return resp
-    results = resultFunc.find_result_by_experiment_id(id)
-    res = make_response(render_template('/Results.html', results=results))
+
+    all_paths, videos, images, audios = resultFunc.format_seperator(id)
+    # print('audios = ', audios)
+    # print('images = ', images)
+    # print('videos = ', videos)
+    # print('all_paths = ', all_paths)
+    files_info = resultFunc.get_files_by_result_id(id)
+    result = resultFunc.get_result_by_id(id)
+    print(files_info)
+    print('*********************\n\n\n',result)
+    res = make_response(render_template('/Results.html',
+                                        videos=videos,
+                                        images=images,
+                                        audios=audios,
+                                        files_info=files_info,
+                                        result=result))
     return res
 
 

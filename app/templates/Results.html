@@ -1,58 +1,112 @@
-<!--started by pouria - date : 7/2/2022-->
 {% include 'header.html' %}
+<div class="main-panel">
+    <div class="row">
+        <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Videos</h4>
+                    {% for each in videos %}
+                    <video autoplay="autoplay" controls="controls" preload="preload" download>
+                        <source src="{{each}}">
+                    </video>
+                    <!--                    <p>"{{each}}"</p>-->
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 
+
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Images</h4>
+                {% for each in images %}
+                <img src="{{each}}" download>
+                <!--                <p>"{{each}}"</p>-->
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Audios</h4>
+                {% for each in audios %}
+                <audio controls download>
+                    <source src="{{each}}">
+                </audio>
+                <!--                <p>"{{each}}"</p>-->
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
 
     <div class="col-lg-6 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Tasks table</h4>
+                <h4 class="card-title">Download Files</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Names</th>
+                        </tr>
+                        </thead>
+                        {% for each in files_info %}
+                        <tbody>
+                        <tr>
+                            <td>
+                                <a href="{{each['path']}}" download="{{each['path']}}"><label class="badge badge-info">{{
+                                    each['name'
+                                    ]}} </label></a>
+                            </td>
+                        </tr>
 
-                        <table class="table table-dark">
-                            <thead>
-                            <tr>
-                                <th>
-                                    Result Name
-                                </th>
-                                <th>
-                                    Experiment Name
-                                </th>
-                                <th>
-                                    Result Content
-                                </th>
-                                <th>
-                                    Created At
-                                </th>
-                            </tr>
-                            </thead>
-
-                            <tbody>
-                            {% for each in results %}
-                            <tr>
-
-                                <td>
-                                    {{each['result_name']}}
-                                </td>
-                                <td>
-                                    {{each['experiment_name']}}
-                                </td>
-                                <td>
-                                    {{each['content']}}
-                                </td>
-                                <td>
-                                    {{each['created_at']}}
-                                </td>
-
-                            </tr>
-                            {% endfor %}
-
-                            </tbody>
-
-                        </table>
-
-
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
-{% include 'footer.html' %}
+    <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Tasks table</h4>
+                <div class="table-responsive pt-3">
+                    <table class="table table-dark">
+                        <thead>
+                        <tr>
+                            <th>
+                                Content
+                            </th>
+                            <th>
+                                experiment_name
+                            </th>
+
+                        </tr>
+                        </thead>
+                        {% for each in result %}
+                        <tbody>
+                        <tr>
+                            <td>
+                                {{each['experiment_name']}}
+                            </td>
+                            <td>
+                                {{each['content']}}
+                            </td>
+                        </tr>
+
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'footer.html' %}
