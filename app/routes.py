@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request, make_response, redirect
+from flask import render_template, request, make_response, redirect, send_file
 from flask_wtf import FlaskForm
 from wtforms import FileField
 import json
@@ -150,7 +150,8 @@ def add_results():
             day = today[-1]
             month = today[1]
             year = today[0]
-            path = f"C:\\Users\\Sir_PouRia\\Desktop\\Roje Enterprise Software\\static\\{year}\\{month}\\{day}\\{form['result_name']}"
+            path = f"C:\\Users\\Sir_PouRia\\Desktop\\Roje Enterprise Software\\app\\templates\\vendors\\" \
+                   f"files\\{year}\\{month}\\{day}\\{form['result_name']}"
             if not os.path.isdir(path):
                 os.makedirs(path)
             file = request.files.getlist('file')
@@ -178,10 +179,10 @@ def show_results(id):
         return resp
 
     all_paths, videos, images, audios = resultFunc.format_seperator(id)
-    # print('audios = ', audios)
-    # print('images = ', images)
-    # print('videos = ', videos)
-    # print('all_paths = ', all_paths)
+    print('audios = ', audios)
+    print('images = ', images)
+    print('videos = ', videos)
+    print('all_paths = ', all_paths)
     files_info = resultFunc.get_files_by_result_id(id)
     result = resultFunc.get_result_by_id(id)
     print(files_info)
@@ -191,11 +192,20 @@ def show_results(id):
                                         images=images,
                                         audios=audios,
                                         files_info=files_info,
-                                        result=result))
+                                        result=result,
+                                        result_id=id))
     return res
 
+@app.route('/download_file/<id>/<result_id>', methods=['GET'])
+def download(id, result_id):
 
-
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    file_info = resultFunc.give_path_by_file_id(id)
+    path = file_info[0]['path'].replace('\\', '/')
+    return send_file(path, as_attachment=True)
 
 
 @app.route('/protocols', methods=['POST'])

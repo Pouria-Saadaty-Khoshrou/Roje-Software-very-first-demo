@@ -55,16 +55,16 @@ def format_seperator(result_id):
         for node in node:
             path = node['f']['path']
             if path.split('.')[-1] in image_formats:
-                images.append(path)
-                all_paths.append(path)
+                images.append(path.split('vendors\\')[-1].replace('\\', '/'))
+                all_paths.append(path.split('vendors\\')[-1].replace('\\', '/'))
             elif path.split('.')[-1] in video_formats:
-                videos.append(path)
-                all_paths.append(path)
+                videos.append(path.split('vendors\\')[-1].replace('\\', '/'))
+                all_paths.append(path.split('vendors\\')[-1].replace('\\', '/'))
             elif path.split('.')[-1] in audio_formats:
-                audios.append(path)
-                all_paths.append(path)
+                audios.append(path.split('vendors\\')[-1].replace('\\', '/'))
+                all_paths.append(path.split('vendors\\')[-1].replace('\\', '/'))
             else:
-                all_paths.append(path)
+                all_paths.append(path.split('vendors\\')[-1].replace('\\', '/'))
         # print('audios = ', audios)
         # print('images = ', images)
         # print('videos = ', videos)
@@ -91,4 +91,14 @@ def get_result_by_id(result_id):
         result = []
         for each in node.data():
             result.append(each['r'])
+        return result
+
+def give_path_by_file_id(file_id):
+    with driver.session() as session:
+        node = session.run("match (f:File{id:$file_id})"
+                           " return f",
+                           file_id=file_id)
+        result = []
+        for each in node.data():
+            result.append(each['f'])
         return result

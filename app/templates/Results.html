@@ -6,9 +6,12 @@
                 <div class="card-body">
                     <h4 class="card-title">Videos</h4>
                     {% for each in videos %}
-                    <video autoplay="autoplay" controls="controls" preload="preload" download>
-                        <source src="{{each}}">
-                    </video>
+                    <div class="card-body">
+                        <video controls="controls" preload="preload" download width="500"
+                               height="500">
+                            <source src="{{ url_for('static',filename=each)}}">
+                        </video>
+                    </div>
                     <!--                    <p>"{{each}}"</p>-->
                     {% endfor %}
                 </div>
@@ -22,8 +25,10 @@
             <div class="card-body">
                 <h4 class="card-title">Images</h4>
                 {% for each in images %}
-                <img src="{{each}}" download>
-                <!--                <p>"{{each}}"</p>-->
+                <div class="card-body">
+                    <img src="{{ url_for('static',filename=each)}}" download width="500"
+                         height="500">>
+                </div>
                 {% endfor %}
             </div>
         </div>
@@ -35,9 +40,11 @@
             <div class="card-body">
                 <h4 class="card-title">Audios</h4>
                 {% for each in audios %}
-                <audio controls download>
-                    <source src="{{each}}">
-                </audio>
+                <div class="card-body">
+                    <audio controls download>
+                        <source src="{{ url_for('static',filename=each)}}">
+                    </audio>
+                </div>
                 <!--                <p>"{{each}}"</p>-->
                 {% endfor %}
             </div>
@@ -60,9 +67,8 @@
                         <tbody>
                         <tr>
                             <td>
-                                <a href="{{each['path']}}" download="{{each['path']}}"><label class="badge badge-info">{{
-                                    each['name'
-                                    ]}} </label></a>
+                                <a href = "{{ url_for('download' ,id=each['id'], result_id=result_id) }}">
+                                    <label class="badge badge-info">{{ each['name' ]}} </label></a>
                             </td>
                         </tr>
 
@@ -109,4 +115,11 @@
             </div>
         </div>
     </div>
+
+
+
+
+    <!--    <img src="{{ url_for('static',filename=images[0])}}">-->
+    <!--    <p>{{ images[0] }}</p>-->
+
     {% include 'footer.html' %}
