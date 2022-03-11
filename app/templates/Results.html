@@ -67,7 +67,7 @@
                         <tbody>
                         <tr>
                             <td>
-                                <a href = "{{ url_for('download' ,id=each['id'], result_id=result_id) }}">
+                                <a href="{{ url_for('download' ,id=each['id'], result_id=result_id) }}">
                                     <label class="badge badge-info">{{ each['name' ]}} </label></a>
                             </td>
                         </tr>
@@ -89,10 +89,10 @@
                         <thead>
                         <tr>
                             <th>
-                                Content
+                                experiment_name
                             </th>
                             <th>
-                                experiment_name
+                                Content
                             </th>
 
                         </tr>
@@ -104,7 +104,7 @@
                                 {{each['experiment_name']}}
                             </td>
                             <td>
-                                {{each['content']}}
+                                <p>{{each['content']}}</p>
                             </td>
                         </tr>
 
@@ -117,6 +117,16 @@
     </div>
 
 
+<!--    <div class="col-md-12 grid-margin stretch-card">-->
+<!--        <div class="card">-->
+<!--            <div class="card-body">-->
+<!--                <h4 class="card-title">Results/ {{result[0]['experiment_name']}}</h4>-->
+<!--                <p>-->
+<!--                    {{ result[0]['content'] }}-->
+<!--                </p>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 
 
     <!--    <img src="{{ url_for('static',filename=images[0])}}">-->
