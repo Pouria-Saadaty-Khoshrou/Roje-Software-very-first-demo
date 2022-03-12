@@ -1,7 +1,7 @@
 from app.services.neo4j import driver
 
 
-def Create_Folder(folder_name, top_folder):
+def Create_Folder(folder_name, top_folder, userId):
     with driver.session() as session:
         node = session.run(
             "create (f:Folder {name:$folder_name, "
@@ -10,12 +10,13 @@ def Create_Folder(folder_name, top_folder):
             " return f.id",
             folder_name=folder_name)
         folder_id = node.data()[0]['f.id']
-        print(folder_id)
+
         if not top_folder:
             with driver.session() as session:
                 session.run(
-                    "match (top:Main_Folder)"
-                    "create  (top) - [:Created_at{Created_at:datetime()}] -> (f {id:$folder_id})",
+                    "match (u:User{id:$userId}), (f:Folder {id:$folder_id})"
+                    " create (u) - [:Created_at{Created_at:datetime()}] -> (f)",
+                    userId=userId,
                     folder_id=folder_id)
 
         else:
@@ -24,32 +25,45 @@ def Create_Folder(folder_name, top_folder):
 
 
 def connect_file_or_folder_to_folder(file_or_folder_id, top_folder_id):
+    # with driver.session() as session:
+    #     node = session.run(
+    #         "match (top:Folder {id:$top_folder_id}), "
+    #         "(f {id:$file_or_folder_id}) "
+    #         "create (top) - [:Created_at{Created_at:datetime()}] -> (f)",
+    #         top_folder_id=top_folder_id,
+    #         file_or_folder_id=file_or_folder_id)
+
     with driver.session() as session:
         node = session.run(
-            "match (top:Folder {id:$top_folder_id}), "
+            "match (top{id:$top_folder_id}), "
             "(f {id:$file_or_folder_id}) "
             "create (top) - [:Created_at{Created_at:datetime()}] -> (f)",
             top_folder_id=top_folder_id,
             file_or_folder_id=file_or_folder_id)
 
 
-def Create_File(file_name, content, top_folder):
+
+def Create_File(file_name, path, top_folder, userId):
     with driver.session() as session:
         node = session.run(
             "create (f:File {name:$file_name, "
-            " content:$content,"
+            " path:$path,"
             " id: apoc.create.uuid(),"
             " created_at:datetime()})"
             " return f.id",
             file_name=file_name,
-            content=content)
-        node=node.data()[0]['f.id']
-        if not top_folder:
+            path=path)
+        node = node.data()[0]['f.id']
+
+        if top_folder == '[]':
             with driver.session() as session:
+
                 session.run(
-                    "match (top:Main_Folder)"
-                    "create  (top) - [:Created_at{Created_at:datetime()}] -> (f {id:$node})",
-                    node=node)
+                    "match (u:User{id:$userId}), (f:File {id:$node})"
+                    " create  (u) - [:Created_at{Created_at:datetime()}] -> (f)",
+                    node=node,
+                    userId=userId)
+
         else:
             connect_file_or_folder_to_folder(node, top_folder)
 
@@ -73,3 +87,15 @@ def get_folder_name():
         for each in node.data():
             result.append(each['f'])
         return result
+
+def add_file_to_result(path, file_name, result_id):
+    with driver.session() as session:
+        node = session.run(
+            "create (f:File {name:$file_name, "
+            " path:$path,"
+            " id: apoc.create.uuid(),"
+            " created_at:datetime()})"
+            " return f.id",
+            file_name=file_name,
+            path=path)
+        connect_file_or_folder_to_folder(node.data()[0]['f.id'], result_id)

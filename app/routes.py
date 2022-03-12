@@ -1,6 +1,10 @@
 from app import app
-from flask import render_template, request, make_response, redirect
+from flask import render_template, request, make_response, redirect, send_file
+from flask_wtf import FlaskForm
+from wtforms import FileField
 import json
+import os
+from datetime import date
 
 from nodes import users as uFunc
 from nodes import projects as pFunc
@@ -17,6 +21,7 @@ from nodes import BOMs as bomFunc
 from nodes import tasks as taskFunc
 from nodes import Results as resultFunc
 from nodes import Folders_and_Files as folderFunc
+
 
 @app.route('/', methods=['GET'])
 def index():
@@ -98,9 +103,8 @@ def makeExperiment():
 def read_experiment(id):
     experiment = exFunc.getExperimentById(id)
 
-    #my_tree = exFunc.getTree(id)
+    # my_tree = exFunc.getTree(id)
     my_tree = exFunc.getTree_Pouria(id, 'Protocol')
-
 
     if len(my_tree[0]) == 0:
         tree_levels = [0]
@@ -117,10 +121,19 @@ def read_experiment(id):
     # del(protocols[0])
     if 0 in protocols:
         del (protocols[0])
-    experiment_id=id
+    experiment_id = id
+    results = resultFunc.find_result_by_experiment_id(id)
+
     res = make_response(
-        render_template('experiment.html', experiment=experiment, tree_levels=tree_levels, protocols=protocols, experiment_id=experiment_id))
+        render_template('experiment.html',
+                        experiment=experiment,
+                        tree_levels=tree_levels,
+                        protocols=protocols,
+                        experiment_id=experiment_id,
+                        results=results))
+
     return res
+
 
 @app.route('/add_results', methods=['POST'])
 def add_results():
@@ -129,7 +142,31 @@ def add_results():
         resp = make_response(render_template('login.html'))
         return resp
     form = request.form.to_dict()
-    resultFunc.create_result(form["experiment_id"], form['result_name'], form['content'])
+    # **************
+    if form['result_name'] != '' and form['content'] != '':
+        if not resultFunc.existance_of_result_name(form['result_name']):
+            result_id = resultFunc.create_result(form["experiment_id"], form['result_name'], form['content'])
+            if not request.files['file'].filename == '':
+                today = str(date.today()).split('-')
+                day = today[-1]
+                month = today[1]
+                year = today[0]
+                path = f"C:\\Users\\Sir_PouRia\\Desktop\\Roje Enterprise Software\\app\\templates\\vendors\\" \
+                       f"files\\{year}\\{month}\\{day}\\{form['result_name']}"
+
+                if not os.path.isdir(path):
+                    os.makedirs(path)
+                file = request.files.getlist('file')
+                for file in file:
+                    app.config['UPLOAD_FOLDER'] = path
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+                    final_path = path + '\\' + file.filename
+                    folderFunc.add_file_to_result(final_path, file.filename, result_id)
+
+        # print(result_id)
+
+        # **************
+
     return redirect(f'/experiment/{form["experiment_id"]}')
 
 
@@ -139,13 +176,35 @@ def show_results(id):
     if not userId:
         resp = make_response(render_template('login.html'))
         return resp
-    results = resultFunc.find_result_by_experiment_id(id)
-    print(results)
-    res = make_response(render_template('/Results.html', results=results))
+
+    all_paths, videos, images, audios = resultFunc.format_seperator(id)
+    # print('audios = ', audios)
+    # print('images = ', images)
+    # print('videos = ', videos)
+    # print('all_paths = ', all_paths)
+    files_info = resultFunc.get_files_by_result_id(id)
+    result = resultFunc.get_result_by_id(id)
+    # print(files_info)
+    # print('*********************\n\n\n', result)
+    res = make_response(render_template('/Results.html',
+                                        videos=videos,
+                                        images=images,
+                                        audios=audios,
+                                        files_info=files_info,
+                                        result=result,
+                                        result_id=id))
     return res
 
 
-
+@app.route('/download_file/<id>/<result_id>', methods=['GET'])
+def download(id, result_id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    file_info = resultFunc.give_path_by_file_id(id)
+    path = file_info[0]['path'].replace('\\', '/')
+    return send_file(path, as_attachment=True)
 
 
 @app.route('/protocols', methods=['POST'])
@@ -154,11 +213,8 @@ def create_protocol():
     experiment = exFunc.getExperimentById(data["experiment_id"])
     protocol_id = protocolFunc.make_protocol(data['name'])
 
-
-    #my_tree = exFunc.getTree(data["experiment_id"])
+    # my_tree = exFunc.getTree(data["experiment_id"])
     my_tree = exFunc.getTree_Pouria(data["experiment_id"], 'Protocol')
-
-
 
     tree_level = data['tree_level']
     tree_level = int(tree_level)
@@ -171,7 +227,7 @@ def create_protocol():
         for each in parent_list:
             parent_idies.append(my_tree[1].nodes[each]['properties']['id'])
         protocolFunc.connect_to_idies(protocol_id, parent_idies)
-        #tree_levels = list(my_tree[0].keys())
+        # tree_levels = list(my_tree[0].keys())
     # tree_dict = my_tree[0]
     # tree_graph = my_tree[1]
     # protocols = {}
@@ -184,12 +240,12 @@ def create_protocol():
     # if 0 in protocols:
     #     del (protocols[0])
 
-    #res = make_response(
-        #render_template('experiment.html', experiment=experiment, tree_levels=tree_levels, protocols=protocols))
+    # res = make_response(
+    # render_template('experiment.html', experiment=experiment, tree_levels=tree_levels, protocols=protocols))
 
     return redirect(f'/experiment/{data["experiment_id"]}')
 
-    #return res
+    # return res
 
 
 @app.route('/create_account', methods=['POST'])
@@ -571,6 +627,7 @@ def add_task_to_protocol():
     #
     # return resp
 
+
 @app.route("/Folders", methods=['GET'])
 def show_Folders():
     userId = request.cookies.get('User_id')
@@ -579,7 +636,7 @@ def show_Folders():
         return resp
     folder_names = folderFunc.get_folder_name()
     resp = make_response(render_template('Folders.html',
-                         folder_names=folder_names))
+                                         folder_names=folder_names))
     return resp
 
 
@@ -589,17 +646,37 @@ def add_Folders():
     if not userId:
         resp = make_response(render_template('login.html'))
         return resp
-    form = request.form.to_dict()
-    if form['file_or_folder'] == 'Folder':
-        print(form)
-        if form['Top Folder'] == '[]':
-            folderFunc.Create_Folder(form['Folder_or_File_name'], [])
-        else:
-            folderFunc.Create_Folder(form['Folder_or_File_name'], form['Top Folder'])
-    else:
-        folderFunc.Create_File(form['Folder_or_File_name'],form['file_content'], form['Top Folder'])
 
+    form = request.form.to_dict()
+    print(form)
+    if 'Top_Folder' not in form:
+        form['Top_Folder'] = '[]'
+
+    if form['file_or_folder'] == 'Folder':
+
+        if form['Top_Folder'] == '[]':
+            folderFunc.Create_Folder(form['Folder_or_File_name'], [], userId)
+        else:
+            folderFunc.Create_Folder(form['Folder_or_File_name'], form['Top_Folder'], userId)
+    else:
+
+        today = str(date.today()).split('-')
+        day = today[-1]
+        month = today[1]
+        year = today[0]
+        path = f"C:\\Users\\Sir_PouRia\\Desktop\\Roje Enterprise Software\\folders\\{year}\\{month}\\{day}"
+        if not os.path.isdir(path):
+            os.makedirs(path)
+        file = request.files['file']
+        if file:
+            file_format = str(file.filename).split('.')[-1]
+            app.config['UPLOAD_FOLDER'] = path
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], form['Folder_or_File_name'] + '.' + file_format))
+            final_path = path + '\\' + form['Folder_or_File_name'] + '.' + file_format
+
+            folderFunc.Create_File(form['Folder_or_File_name'], final_path, form['Top_Folder'], userId)
     return redirect(f'/Folders')
+
 
 @app.route("/Folder/<id>", methods=['GET'])
 def what_inside_folders(id):
@@ -611,5 +688,5 @@ def what_inside_folders(id):
     print(a)
     folder_names = folderFunc.get_folder_name()
     resp = make_response(render_template('Folders.html',
-                         folder_names=folder_names))
+                                         folder_names=folder_names))
     return resp

@@ -1,58 +1,135 @@
-<!--started by pouria - date : 7/2/2022-->
 {% include 'header.html' %}
+<div class="main-panel">
+    <div class="row">
+        <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Videos</h4>
+                    {% for each in videos %}
+                    <div class="card-body">
+                        <video controls="controls" preload="preload" download width="500"
+                               height="500">
+                            <source src="{{ url_for('static',filename=each)}}">
+                        </video>
+                    </div>
+                    <!--                    <p>"{{each}}"</p>-->
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 
+
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Images</h4>
+                {% for each in images %}
+                <div class="card-body">
+                    <img src="{{ url_for('static',filename=each)}}" download width="500"
+                         height="500">>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Audios</h4>
+                {% for each in audios %}
+                <div class="card-body">
+                    <audio controls download>
+                        <source src="{{ url_for('static',filename=each)}}">
+                    </audio>
+                </div>
+                <!--                <p>"{{each}}"</p>-->
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
 
     <div class="col-lg-6 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Tasks table</h4>
+                <h4 class="card-title">Download Files</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Names</th>
+                        </tr>
+                        </thead>
+                        {% for each in files_info %}
+                        <tbody>
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('download' ,id=each['id'], result_id=result_id) }}">
+                                    <label class="badge badge-info">{{ each['name' ]}} </label></a>
+                            </td>
+                        </tr>
 
-                        <table class="table table-dark">
-                            <thead>
-                            <tr>
-                                <th>
-                                    Result Name
-                                </th>
-                                <th>
-                                    Experiment Name
-                                </th>
-                                <th>
-                                    Result Content
-                                </th>
-                                <th>
-                                    Created At
-                                </th>
-                            </tr>
-                            </thead>
-
-                            <tbody>
-                            {% for each in results %}
-                            <tr>
-
-                                <td>
-                                    {{each['result_name']}}
-                                </td>
-                                <td>
-                                    {{each['experiment_name']}}
-                                </td>
-                                <td>
-                                    {{each['content']}}
-                                </td>
-                                <td>
-                                    {{each['created_at']}}
-                                </td>
-
-                            </tr>
-                            {% endfor %}
-
-                            </tbody>
-
-                        </table>
-
-
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
-{% include 'footer.html' %}
+    <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Tasks table</h4>
+                <div class="table-responsive pt-3">
+                    <table class="table table-dark">
+                        <thead>
+                        <tr>
+                            <th>
+                                experiment_name
+                            </th>
+                            <th>
+                                Content
+                            </th>
+
+                        </tr>
+                        </thead>
+                        {% for each in result %}
+                        <tbody>
+                        <tr>
+                            <td>
+                                {{each['experiment_name']}}
+                            </td>
+                            <td>
+                                <p>{{each['content']}}</p>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<!--    <div class="col-md-12 grid-margin stretch-card">-->
+<!--        <div class="card">-->
+<!--            <div class="card-body">-->
+<!--                <h4 class="card-title">Results/ {{result[0]['experiment_name']}}</h4>-->
+<!--                <p>-->
+<!--                    {{ result[0]['content'] }}-->
+<!--                </p>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+
+    <!--    <img src="{{ url_for('static',filename=images[0])}}">-->
+    <!--    <p>{{ images[0] }}</p>-->
+
+    {% include 'footer.html' %}
