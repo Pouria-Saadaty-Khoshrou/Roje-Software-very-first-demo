@@ -115,18 +115,24 @@
             </div>
         </div>
     </div>
-
-
-<!--    <div class="col-md-12 grid-margin stretch-card">-->
-<!--        <div class="card">-->
-<!--            <div class="card-body">-->
-<!--                <h4 class="card-title">Results/ {{result[0]['experiment_name']}}</h4>-->
-<!--                <p>-->
-<!--                    {{ result[0]['content'] }}-->
-<!--                </p>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
+    <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <a type="button" class="btn btn-danger"
+                   href="{{ url_for('delete_result' ,id=result_id) }}">Delete</a>
+            </div>
+        </div>
+    </div>
+    <!--    <div class="col-md-12 grid-margin stretch-card">-->
+    <!--        <div class="card">-->
+    <!--            <div class="card-body">-->
+    <!--                <h4 class="card-title">Results/ {{result[0]['experiment_name']}}</h4>-->
+    <!--                <p>-->
+    <!--                    {{ result[0]['content'] }}-->
+    <!--                </p>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
 
 
     <!--    <img src="{{ url_for('static',filename=images[0])}}">-->

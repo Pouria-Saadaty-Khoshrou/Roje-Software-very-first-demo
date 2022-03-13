@@ -2,13 +2,11 @@ from typing import Optional
 import random
 from app.services.neo4j import driver
 
-
 import pandas as pd
 import networkx as nx
 
 
-
-def createExperiment(projectId,name):
+def createExperiment(projectId, name):
     session = driver.session()
     query = "create (n:Experiment {id:apoc.create.uuid(), " \
             "name:$name, " \
@@ -17,19 +15,22 @@ def createExperiment(projectId,name):
             "match (p:Project {id:$projectId}) " \
             "with n,p " \
             "create (p)-[r:partOf {id:apoc.create.uuid()} ]->(n)"
-    session.run(query,name=name,projectId=projectId)
+    session.run(query, name=name, projectId=projectId)
     session.close()
+
 
 def getExperimentById(id):
     session = driver.session()
-    query = "match (experiment:Experiment {id:$id}) return experiment"
+    query = "match (experiment:Experiment {id:$id}) " \
+            "WHERE not exists(experiment.deleted_at) " \
+            "return experiment"
     # TODO: have to add protocols
-    result = session.run(query,id=id)
+    result = session.run(query, id=id)
     for each in result:
         experiment = {
-            "name":each['experiment']['name'],
-            "id":each['experiment']['id'],
-            "created at":each['experiment']['created_at']
+            "name": each['experiment']['name'],
+            "id": each['experiment']['id'],
+            "created at": each['experiment']['created_at']
         }
     session.close()
     return experiment
@@ -82,7 +83,7 @@ def getTree(id: str):
         level = +1
         our_dict[level] = list(our_df.loc[our_df[0] == root_node][1])
 
-        #our_dict[level + 1] = list(our_df[our_df[0].isin(our_dict[level])][1])
+        # our_dict[level + 1] = list(our_df[our_df[0].isin(our_dict[level])][1])
         # if len(our_dict[level+1]) == 0:
         #    print("x")
         while True:
@@ -92,16 +93,16 @@ def getTree(id: str):
                 break
         for each in our_dict:
             if len(our_dict[each]) != 0:
-                graph_dict[each]=our_dict[each]
+                graph_dict[each] = our_dict[each]
 
     return graph_dict, g
 
 
-
 def getTree_Pouria(id: str, type):
-
     with driver.session() as session:
-        result = session.run(f"match (n {{id:'{id}'}})-[r*]->(en:{type}) return n,r,en")
+        result = session.run(f"match (n {{id:'{id}'}})-[r*]->(en:{type}) "
+                             f"WHERE not exists(en.deleted_at) "
+                             f"return n,r,en")
         data = []
         for each in result:
             data.append(each)
@@ -144,7 +145,7 @@ def getTree_Pouria(id: str, type):
         level = +1
         our_dict[level] = list(our_df.loc[our_df[0] == root_node][1])
 
-        #our_dict[level + 1] = list(our_df[our_df[0].isin(our_dict[level])][1])
+        # our_dict[level + 1] = list(our_df[our_df[0].isin(our_dict[level])][1])
         # if len(our_dict[level+1]) == 0:
         #    print("x")
         while True:
@@ -154,9 +155,18 @@ def getTree_Pouria(id: str, type):
                 break
         for each in our_dict:
             if len(our_dict[each]) != 0:
-                graph_dict[each]=our_dict[each]
+                graph_dict[each] = our_dict[each]
 
     return graph_dict, g
 
 
-
+def find_project_by_experiment_id(id):
+    with driver.session() as session:
+        node = session.run("match (e:Experiment{id:$id}) <- [r:partOf] - (p:Project) "
+                           "WHERE not exists(e.deleted_at) "
+                           "return p.id",
+                           id=id)
+        result = []
+        for each in node.data():
+            result.append(each['p.id'])
+        return result

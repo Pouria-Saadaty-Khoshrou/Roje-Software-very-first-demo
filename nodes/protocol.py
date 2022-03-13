@@ -27,6 +27,7 @@ def connect_to_idies(nodeId,idies:list):
 def Existance_of_protocol_exist(name):
     with driver.session() as session:
         node = session.run("match (p:Protocol{Protocol_name:$name}) "
+                           "WHERE not exists(p.deleted_at) "
                            "return p",
                            name=name)
         node = node.data()
@@ -60,7 +61,8 @@ def create_Protocol(name, uid, user_id):
 
 def Get_Protocols_by_USer_Id(user_id):
     with driver.session() as session:
-        node = session.run("match (u:User{id:$user_id}) - [r] -> (p:Protocol)"
+        node = session.run("match (u:User{id:$user_id}) - [r] -> (p:Protocol) "
+                           "WHERE not exists(p.deleted_at) "
                            " return p",
                            user_id=user_id)
         result = []
@@ -71,6 +73,7 @@ def Get_Protocols_by_USer_Id(user_id):
 def get_standards_by_protocol_id(protocol_id):
     with driver.session() as session:
         node = session.run("match (p:Protocol {id:$protocol_id}) <- [r] - (s:Standard) "
+                           "WHERE not exists(s.deleted_at) "
                            "return s",
                            protocol_id=protocol_id)
         result = []
@@ -81,6 +84,7 @@ def get_standards_by_protocol_id(protocol_id):
 def get_device_by_protocol_id(protocol_id):
     with driver.session() as session:
         node = session.run("match (p:Protocol {id:$protocol_id}) <- [r] - (d:Device) "
+                           "WHERE not exists(d.deleted_at) "
                            "return d",
                            protocol_id=protocol_id)
         result = []
@@ -91,6 +95,7 @@ def get_device_by_protocol_id(protocol_id):
 def get_id_device_by_protocol_id(protocol_id):
     with driver.session() as session:
         node = session.run("match (p:Protocol {id:$protocol_id}) <- [r] - (d:Device) "
+                           "WHERE not exists(d.deleted_at) "
                            "return d.id",
                            protocol_id=protocol_id)
         result = []
@@ -101,9 +106,21 @@ def get_id_device_by_protocol_id(protocol_id):
 def get_BOM_by_protocol_id(protocol_id):
     with driver.session() as session:
         node = session.run("match (p:Protocol {id:$protocol_id}) <- [r] - (b:BOM) "
+                           "WHERE not exists(b.deleted_at) "
                            "return b",
                            protocol_id=protocol_id)
         result = []
         for each in node.data():
             result.append(each['b'])
         return result
+
+def get_protocol_by_result_id(id):
+    with driver.session() as session:
+        node = session.run("match (p:Protocol{id:$id}) <- [r*] - (e:Experiment) "
+                           "WHERE not exists(p.deleted_at) "
+                           "return e.id",
+                           id=id)
+        result = []
+        for each in node.data():
+            result.append(each['e.id'])
+        return result[0]
