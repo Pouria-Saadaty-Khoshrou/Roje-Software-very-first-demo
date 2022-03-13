@@ -163,9 +163,7 @@ def add_results():
                 day = today[-1]
                 month = today[1]
                 year = today[0]
-                path = f"C:\\Users\\Sir_PouRia\\Desktop\\Roje Enterprise Software\\app\\templates\\vendors\\" \
-                       f"files\\{year}\\{month}\\{day}\\{form['result_name']}"
-
+                path = os.getcwd()+f"\\app\\templates\\vendors\\files\\{year}\\{month}\\{day}\\{form['result_name']}"
                 if not os.path.isdir(path):
                     os.makedirs(path)
                 file = request.files.getlist('file')
@@ -174,6 +172,8 @@ def add_results():
                     file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
                     final_path = path + '\\' + file.filename
                     folderFunc.add_file_to_result(final_path, file.filename, result_id)
+
+
 
         # print(result_id)
 
@@ -690,7 +690,7 @@ def add_Folders():
         return resp
 
     form = request.form.to_dict()
-    print(form)
+    #print(form)
     if 'Top_Folder' not in form:
         form['Top_Folder'] = '[]'
 
@@ -700,24 +700,39 @@ def add_Folders():
             folderFunc.Create_Folder(form['Folder_or_File_name'], [], userId)
         else:
             folderFunc.Create_Folder(form['Folder_or_File_name'], form['Top_Folder'], userId)
-    else:
-
+    # else:
+    #
+    #     today = str(date.today()).split('-')
+    #     day = today[-1]
+    #     month = today[1]
+    #     year = today[0]
+    #     path = os.getcwd()+f"\\app\\templates\\vendors\\folders\\{year}\\{month}\\{day}"
+    #     if not os.path.isdir(path):
+    #         os.makedirs(path)
+    #     file = request.files['file']
+    #     if file:
+    #         file_format = str(file.filename).split('.')[-1]
+    #         app.config['UPLOAD_FOLDER'] = path
+    #         file.save(os.path.join(app.config['UPLOAD_FOLDER'], form['Folder_or_File_name'] + '.' + file_format))
+    #         final_path = path + '\\' + form['Folder_or_File_name'] + '.' + file_format
+    elif not request.files['file'].filename == '':
         today = str(date.today()).split('-')
         day = today[-1]
         month = today[1]
         year = today[0]
-        path = f"C:\\Users\\Sir_PouRia\\Desktop\\Roje Enterprise Software\\folders\\{year}\\{month}\\{day}"
+        path = os.getcwd() + f"\\app\\templates\\vendors\\folders\\{year}\\{month}\\{day}\\{form['Folder_or_File_name']}"
         if not os.path.isdir(path):
             os.makedirs(path)
-        file = request.files['file']
-        if file:
-            file_format = str(file.filename).split('.')[-1]
+        file = request.files.getlist('file')
+        for file in file:
             app.config['UPLOAD_FOLDER'] = path
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], form['Folder_or_File_name'] + '.' + file_format))
-            final_path = path + '\\' + form['Folder_or_File_name'] + '.' + file_format
-
-            folderFunc.Create_File(form['Folder_or_File_name'], final_path, form['Top_Folder'], userId)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            final_path = path + '\\' + file.filename
+            folderFunc.Create_File(file.filename, final_path, form['Top_Folder'], userId)
     return redirect(f'/Folders')
+
+    #         folderFunc.Create_File(form['Folder_or_File_name'], final_path, form['Top_Folder'], userId)
+    # return redirect(f'/Folders')
 
 
 @app.route("/Folder/<id>", methods=['GET'])
@@ -727,7 +742,7 @@ def what_inside_folders(id):
         resp = make_response(render_template('login.html'))
         return resp
     a = folderFunc.show_what_inside_folder(id)
-    print(a)
+    #print(a)
     folder_names = folderFunc.get_folder_name()
     resp = make_response(render_template('Folders.html',
                                          folder_names=folder_names))
