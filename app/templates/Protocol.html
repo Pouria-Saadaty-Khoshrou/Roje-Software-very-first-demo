@@ -48,7 +48,7 @@
                         <label>BOM List</label>
                         <form class="forms-sample" action="/add_task_to_protocol" method="post">
                             <div class="form-group">
-                                <textarea rows = "25" cols = "60" name = "task", placeholder="Enter the tasks"></textarea>
+                                <textarea rows="25" cols="60" name="task" , placeholder="Enter the tasks"></textarea>
                             </div>
                             <input type="hidden" name="protocol_id" value="{{ protocol_id }}">
                             <div class="form-group">
@@ -63,8 +63,6 @@
         </div>
 
     </div>
-
-
 
 
     <div class="col-lg-6 grid-margin stretch-card">
@@ -171,7 +169,6 @@
             </div>
         </div>
     </div>
-
 
 
     <div class="col-md-6 grid-margin stretch-card">
@@ -282,7 +279,16 @@
 
     </div>
 
+    <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <a type="button" class="btn btn-danger"
+                   href="{{ url_for('delete_protocol' ,id=protocol_id )}}">Delete</a>
+            </div>
+        </div>
+    </div>
 
 </div>
+>
 {% include 'footer.html' %}
 <!--ended by pouria - date : 7/2/2022--

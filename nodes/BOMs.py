@@ -4,6 +4,7 @@ from app.services.neo4j import driver
 def Existance_of_BOM(name):
     with driver.session() as session:
         node = session.run("match (b:BOM{BOM_name:$name}) "
+                           "WHERE not exists(b.deleted_at) "
                            "return b",
                            name=name)
         node = node.data()
@@ -42,6 +43,7 @@ def connect_new_bom_to_other_bom(BOM_id, list_id, list_values):
         for counter in range(len(list_id)):
             session.run("match (main_bom:BOM{id:$B_id}), "
                         "(new_bom:BOM{id:$BOM_id})"
+                        "WHERE not exists(main_bom.deleted_at) "
                         "create (main_bom) - [:Gives_us{Created_at:datetime(), value:$B_value}] -> (new_bom)",
                         B_id=list_id[counter],
                         B_value=list_values[counter],
@@ -50,7 +52,8 @@ def connect_new_bom_to_other_bom(BOM_id, list_id, list_values):
 
 def Get_BOMs_by_USer_Id(user_id):
     with driver.session() as session:
-        node = session.run("match (u:User{id:$user_id}) - [r] -> (b:BOM)"
+        node = session.run("match (u:User{id:$user_id}) - [r] -> (b:BOM) "
+                           "WHERE not exists(b.deleted_at) "
                            " return b",
                            user_id=user_id)
         result = []

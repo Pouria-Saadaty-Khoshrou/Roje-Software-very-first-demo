@@ -21,6 +21,7 @@ from nodes import BOMs as bomFunc
 from nodes import tasks as taskFunc
 from nodes import Results as resultFunc
 from nodes import Folders_and_Files as folderFunc
+from nodes import delete_nodes as delFunc
 
 
 @app.route('/', methods=['GET'])
@@ -81,11 +82,22 @@ def read_project(id):
 
 @app.route("/projectsdel/<id>", methods=['GET'])
 def delete_project(id):
-    pFunc.deleteProjectById(id)
+    delFunc.delete_node_by_id(id)
     userId = request.cookies.get('User_id')
     userProjects = pFunc.findUserProjects(userId)
     resp = make_response(render_template('projects.html', userProjects=userProjects))
     return resp
+
+@app.route("/delete_experiment/<id>", methods=['GET'])
+def delete_experiment(id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    project_id = exFunc.find_project_by_experiment_id(id)[0]
+    delFunc.delete_node_by_id(id)
+    return redirect(f'/projects/{project_id}')
+
 
 
 @app.route("/experiment", methods=['POST'])
@@ -206,6 +218,15 @@ def download(id, result_id):
     path = file_info[0]['path'].replace('\\', '/')
     return send_file(path, as_attachment=True)
 
+@app.route('/delete_result/<id>')
+def delete_result(id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    experiment_id = resultFunc.get_experiment_by_result_id(id)
+    delFunc.delete_node_by_id(id)
+    return redirect(f'/experiment/{experiment_id[0]}')
 
 @app.route('/protocols', methods=['POST'])
 def create_protocol():
@@ -263,7 +284,10 @@ def show_standards():
         resp = make_response(render_template('login.html'))
         return resp
     userProjects = pFunc.findUserProjects(userId)
-    resp = make_response(render_template('standard_form.html', userProjects=userProjects))
+    standard = sFunc.Get_Standard_by_USer_Id(userId)
+    resp = make_response(render_template('standard_form.html',
+                                         userProjects=userProjects,
+                                         standard=standard))
     return resp
 
 
@@ -286,10 +310,8 @@ def delete_standards(id):
     if not userId:
         resp = make_response(render_template('login.html'))
         return resp
-    sFunc.delete_standards_by_id(id)
-    userProjects = pFunc.findUserProjects(userId)
-    resp = make_response(render_template('projects.html', userProjects=userProjects))
-    return resp
+    delFunc.delete_node_by_id(id)
+    return redirect('/projects_standard')
 
 
 # @app.route()
@@ -337,7 +359,8 @@ def delete_place(id):
     if not userId:
         resp = make_response(render_template('login.html'))
         return resp
-    placeFunc.Delete_Place_With_Id(id)
+    #placeFunc.Delete_Place_With_Id(id)
+    delFunc.delete_node_by_id(id)
     places = placeFunc.Get_Places_by_USer_Id(userId)
     resp = make_response(render_template('Places.html', places=places))
     return resp
@@ -373,7 +396,8 @@ def delete_device(id):
     if not userId:
         resp = make_response(render_template('login.html'))
         return resp
-    deviceFunc.Delete_Device_By_Id(id)
+    #deviceFunc.Delete_Device_By_Id(id)
+    delFunc.delete_node_by_id(id)
     places = placeFunc.Get_Places_by_USer_Id(userId)
     resp = make_response(render_template('Places.html', places=places))
     return resp
@@ -454,6 +478,16 @@ def read_protocol(id):
     return resp
 
 
+@app.route("/delete_protocol/<id>", methods=['GET'])
+def delete_protocol(id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    experiment_id = protocolFunc.get_protocol_by_result_id(id)
+    delFunc.delete_node_by_id(id)
+    return redirect(f'/experiment/{experiment_id}')
+
 # ---------------ended by pouria - date : 7/2/2022 ---------------#
 
 # ---------------started by pouria - date : 7/2/2022 ---------------#
@@ -492,9 +526,17 @@ def add_BOMs():
                            form['volume'][0],
                            form['Type_of_material'][0])
     bom_names = bomFunc.Get_BOMs_by_USer_Id(userId)
-    resp = make_response(render_template('BOMs.html',
-                                         bom_names=bom_names))
-    return resp
+    return redirect('/BOMs')
+
+
+@app.route('/delete_boms/<id>')
+def delete_boms(id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    delFunc.delete_node_by_id(id)
+    return redirect('/BOMs')
 
 
 # -----------------added by hossein 2/23/2022--------------

@@ -3,7 +3,8 @@ from app.services.neo4j import driver
 
 def Existance_of_Device_Id(device_id):
     with driver.session() as session:
-        node = session.run("match (d:Device{device_id:$device_id})"
+        node = session.run("match (d:Device{device_id:$device_id}) "
+                           "WHERE not exists(d.deleted_at) "
                            " return d",
                            device_id=device_id)
         if not node.data():
@@ -34,7 +35,8 @@ def Create_Devices(device_name, device_description, device_id, lab_id):
 
 def Get_Devices_By_Place_Id(place_id):
     with driver.session() as session:
-        node = session.run("match (p:Place{id:$place_id}) - [r] -> (d:Device)"
+        node = session.run("match (p:Place{id:$place_id}) - [r] -> (d:Device) "
+                           "WHERE not exists(d.deleted_at) "
                            " return d",
                            place_id=place_id)
         result = []
@@ -43,15 +45,16 @@ def Get_Devices_By_Place_Id(place_id):
         return result
 
 
-def Delete_Device_By_Id(device_id):
-    with driver.session() as session:
-        session.run("match (d:Device{id:$device_id})"
-                    " detach delete d",
-                    device_id=device_id)
+# def Delete_Device_By_Id(device_id):
+#     with driver.session() as session:
+#         session.run("match (d:Device{id:$device_id})"
+#                     " detach delete d",
+#                     device_id=device_id)
 
 def Get_Device_by_USer_Id(user_id):
     with driver.session() as session:
-        node = session.run("match (u:User{id:$user_id}) - [r*] -> (d:Device)"
+        node = session.run("match (u:User{id:$user_id}) - [r*] -> (d:Device) "
+                           "WHERE not exists(d.deleted_at) "
                            " return d",
                            user_id=user_id)
         result = []

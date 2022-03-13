@@ -69,28 +69,31 @@ def Create_Standards(Content, project_id, Standard_name):
 def get_standards_by_project_id(project_id):
     result = []
     with driver.session() as session:
-        node = session.run("match (p:Project{id:$project_id}) - [r] -> (s:Standard)"
+        node = session.run("match (p:Project{id:$project_id}) - [r] -> (s:Standard) "
+                           "WHERE not exists(s.deleted_at) "
                            " return s",
                            project_id=project_id)
         for each in node.data():
             result.append(each['s'])
         return result
 
-def delete_standards_by_id(standard_id):
-
-    with driver.session() as session:
-        session.run("match (s:Standard{id:$standard_id}) detach delete s",
-                    standard_id=standard_id)
+# def delete_standards_by_id(standard_id):
+#
+#     with driver.session() as session:
+#         session.run("match (s:Standard{id:$standard_id}) detach delete s",
+#                     standard_id=standard_id)
 
 def Get_Standard_by_USer_Id(user_id):
     with driver.session() as session:
-        node = session.run("match (u:User{id:$user_id}) - [r*] -> (s:Standard)"
+        node = session.run("match (u:User{id:$user_id}) - [r*] -> (s:Standard) "
+                           "WHERE not exists(s.deleted_at) "
                            " return DISTINCT s",
                            user_id=user_id)
         result = []
         for each in node.data():
             result.append(each['s'])
         return result
+
 #def update_standards(standard_id):
 
 # Delete all relations and node

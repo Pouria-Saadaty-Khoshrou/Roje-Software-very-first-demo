@@ -33,6 +33,27 @@
     </div>
 </div>
 
+<div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+
+
+    <div class="card-body">
+        <h4 class="card-title">Standards</h4>
+        <div class="template-demo">
+            {% for each in standard %}
+<!--            <a type="button" class="btn btn-secondary" href="/projects/{{each['id']}}">{{ each['Standard_name'] }}</a>-->
+            <h3>{{each['Standard_name']}}</h3>
+            <p>{{each['Content']}}</p>
+            <a type="button" class="btn btn-danger" href="{{ url_for('delete_standards' ,id=each['id']) }}">Delete</a>
+            {% endfor %}
+        </div>
+
+    </div>
+
+
+    </div>
+</div>
+
 
 {% include 'footer.html' %}
 <!--#ended by pouria - date : 6/2/2022-->
