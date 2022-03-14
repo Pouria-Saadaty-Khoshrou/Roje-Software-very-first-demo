@@ -4,7 +4,7 @@ from app.services.neo4j import driver
 def existance_of_result_name(result_name):
     with driver.session() as session:
         node = session.run("match (r:Result {result_name:$result_name}) "
-                           "WHERE not exists(r.deleted_at) "
+                           "where not exists (r.updated_at) and not exists(r.deleted_at) "
                            "return r",
                            result_name=result_name)
         if not node.data():
@@ -32,7 +32,7 @@ def create_result(experiment_id, result_name, text):
 def find_result_by_experiment_id(experiment_id):
     with driver.session() as session:
         node = session.run("match (e:Experiment {id:$experiment_id}) - [rel] -> (r:Result) "
-                           "WHERE not exists(r.deleted_at) "
+                           "where not exists (r.updated_at) and not exists(r.deleted_at) "
                            " return r",
                            experiment_id=experiment_id)
         result = []
@@ -48,7 +48,7 @@ def format_seperator(result_id):
     audios = []
     with driver.session() as session:
         node = session.run("match (u:Result{id:$result_id}) - [r] -> (f:File) "
-                           "WHERE not exists(u.deleted_at) "
+                           "where not exists (u.updated_at) and not exists(u.deleted_at) "
                            " return f",
                            result_id=result_id)
         node = node.data()
@@ -78,7 +78,7 @@ def format_seperator(result_id):
 def get_files_by_result_id(result_id):
     with driver.session() as session:
         node = session.run("match (u:Result{id:$result_id}) - [r] -> (f:File) "
-                           "WHERE not exists(u.deleted_at) "
+                           "where not exists (u.updated_at) and not exists(u.deleted_at) "
                            " return f",
                            result_id=result_id)
         result = []
@@ -90,7 +90,7 @@ def get_files_by_result_id(result_id):
 def get_result_by_id(result_id):
     with driver.session() as session:
         node = session.run("match (r:Result{id:$result_id}) "
-                           "WHERE not exists(r.deleted_at) "
+                           "where not exists (r.updated_at) and not exists(r.deleted_at) "
                            " return r",
                            result_id=result_id)
         result = []
@@ -101,7 +101,7 @@ def get_result_by_id(result_id):
 def give_path_by_file_id(file_id):
     with driver.session() as session:
         node = session.run("match (f:File{id:$file_id}) "
-                           "WHERE not exists(f.deleted_at) "
+                           "where not exists (f.updated_at) and not exists(f.deleted_at) "
                            " return f",
                            file_id=file_id)
         result = []
@@ -112,7 +112,7 @@ def give_path_by_file_id(file_id):
 def get_experiment_by_result_id(id):
     with driver.session() as session:
         node = session.run("match (result:Result{id:$id}) <- [r:Created_at] - (e:Experiment) "
-                           "WHERE not exists(result.deleted_at) "
+                           "where not exists (result.updated_at) and not exists(result.deleted_at) "
                            "return e.id",
                            id=id)
         result = []

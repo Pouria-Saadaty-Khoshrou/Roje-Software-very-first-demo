@@ -4,6 +4,7 @@ from app.services.neo4j import driver
 def existance_of_task_in_protocol(protocol_id):
     with driver.session() as session:
         node = session.run("match (p:Protocol {id:$protocol_id}), "
+                           "where not exists (p.updated_at) and not exists(p.deleted_at) "
                            "(p) - [r] -> (t:Task) "
                            "return t",
                            protocol_id=protocol_id)
@@ -58,7 +59,8 @@ def create_linked_list_for_tasks(list_of_descriptions, protocol_id):
 
 def get_tasks_by_protocol_id(protocol_id):
     with driver.session() as session:
-        node = session.run("match (p:Protocol{id:$protocol_id}) - [r*] -> (t:Task)"
+        node = session.run("match (p:Protocol{id:$protocol_id}) - [r*] -> (t:Task) "
+                           "where not exists (p.updated_at) and not exists(p.deleted_at) "
                            " return t",
                            protocol_id=protocol_id)
         result = []

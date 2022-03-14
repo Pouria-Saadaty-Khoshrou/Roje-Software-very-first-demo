@@ -22,6 +22,7 @@ from nodes import tasks as taskFunc
 from nodes import Results as resultFunc
 from nodes import Folders_and_Files as folderFunc
 from nodes import delete_nodes as delFunc
+from nodes import update_nodes as updateFunc
 
 
 @app.route('/', methods=['GET'])
@@ -87,6 +88,24 @@ def delete_project(id):
     userProjects = pFunc.findUserProjects(userId)
     resp = make_response(render_template('projects.html', userProjects=userProjects))
     return resp
+
+
+@app.route("/projects/<id>", methods=['POST'])
+def update_project(id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    form = request.form.to_dict()
+    dic = {}
+    if form['projectName'] != '':
+        dic['name'] = form['projectName']
+    if dic != {}:
+        node_id = updateFunc.copy_nodes(id)
+        updateFunc.update_node(dic, node_id)
+    return redirect(f'/projects/{node_id}')
+
+
 
 @app.route("/delete_experiment/<id>", methods=['GET'])
 def delete_experiment(id):
@@ -373,7 +392,10 @@ def show_devices():
         resp = make_response(render_template('login.html'))
         return resp
     Lab = placeFunc.Get_Places_by_USer_Id(userId)
-    resp = make_response(render_template('Devices.html', Lab=Lab))
+    devices = deviceFunc.Get_Device_by_USer_Id(userId)
+    resp = make_response(render_template('Devices.html',
+                                         Lab=Lab,
+                                         devices=devices))
     return resp
 
 
@@ -401,6 +423,30 @@ def delete_device(id):
     places = placeFunc.Get_Places_by_USer_Id(userId)
     resp = make_response(render_template('Places.html', places=places))
     return resp
+
+# @app.route('/update_device', methods=['post'])
+# def update_device():
+#     userId = request.cookies.get('User_id')
+#     if not userId:
+#         resp = make_response(render_template('login.html'))
+#         return resp
+#     form = request.form.to_dict()
+#     dic = {}
+#     print(form,'***********\n\n\n\n')
+#     # if form['device_name'] != '':
+#     #     dic['device_name'] = form['device_name']
+#     #
+#     # elif form['device_id'] != '':
+#     #     dic['device_name'] = form['device_id']
+#     #
+#     # elif form['device_description'] != '':
+#     #     dic['device_name'] = form['device_description']
+#     #
+#     #
+#     # if dic != {}:
+#     #     node_id = updateFunc.copy_nodes(id)
+#     #     updateFunc.update_node(dic, node_id)
+#     return redirect(f'/Devices')
 
 
 # ---------------ended by pouria - date : 7/2/2022 ---------------#

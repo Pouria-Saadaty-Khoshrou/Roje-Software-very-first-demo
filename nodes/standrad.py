@@ -70,7 +70,7 @@ def get_standards_by_project_id(project_id):
     result = []
     with driver.session() as session:
         node = session.run("match (p:Project{id:$project_id}) - [r] -> (s:Standard) "
-                           "WHERE not exists(s.deleted_at) "
+                           "where not exists (s.updated_at) and not exists(s.deleted_at) "
                            " return s",
                            project_id=project_id)
         for each in node.data():
@@ -86,7 +86,7 @@ def get_standards_by_project_id(project_id):
 def Get_Standard_by_USer_Id(user_id):
     with driver.session() as session:
         node = session.run("match (u:User{id:$user_id}) - [r*] -> (s:Standard) "
-                           "WHERE not exists(s.deleted_at) "
+                           "where not exists (s.updated_at) and not exists(s.deleted_at) "
                            " return DISTINCT s",
                            user_id=user_id)
         result = []

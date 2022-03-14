@@ -7,7 +7,7 @@ from app.services.neo4j import driver
 def findUserProjects(User_id):
     session = driver.session()
     query = "match (project:Project)<-[rel:Created]-(user:User {id:$userId}) " \
-            "where not exists(project.deleted_at) " \
+            "where not exists (project.updated_at) and not exists(project.deleted_at) " \
             "return project "
     result = session.run(query,userId=User_id)
     projects = []
@@ -32,7 +32,7 @@ import calendar
 import time
 def getProjectById(id:str):
     query = "match (project:Project {id:$id}) " \
-            "where not exists(project.deleted_at) " \
+            "where not exists (project.updated_at) and not exists(project.deleted_at) " \
             "return project"
     session = driver.session()
     result = session.run(query,id=id)
@@ -53,7 +53,7 @@ def getProjectById(id:str):
 
 def getProjectExperiments(id:str):
     query = "match (n:Project {id:$id})-[r]->(experiments:Experiment) " \
-            "where not exists(experiments.deleted_at) " \
+            "where not exists (n.updated_at) and not exists(n.deleted_at) " \
             "return experiments "
     session = driver.session()
     result = session.run(query,id=id)

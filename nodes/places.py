@@ -5,7 +5,7 @@ from app.services.neo4j import driver
 def Existance_Of_Place(place_name):
     with driver.session() as session:
         node = session.run("match (p:Place{Place_name:$place_name}) "
-                           "WHERE not exists(p.deleted_at) "
+                           "where not exists (p.updated_at) and not exists(p.deleted_at) "
                            "return p",
                            place_name=place_name)
         if not node.data():
@@ -33,7 +33,7 @@ def Create_Places(Place_name, user_id):
 def Get_Places_by_USer_Id(user_id):
     with driver.session() as session:
         node = session.run("match (u:User{id:$user_id}) - [r] -> (p:Place) "
-                           "WHERE not exists(p.deleted_at) "
+                           "where not exists (p.updated_at) and not exists(p.deleted_at) "
                            " return p",
                            user_id=user_id)
         result = []
@@ -45,7 +45,7 @@ def Get_Places_by_USer_Id(user_id):
 def Show_Place_With_Id(place_id):
     with driver.session() as session:
         node = session.run("match (p:Place{id:$place_id}) "
-                           "WHERE not exists(p.deleted_at) "
+                           "where not exists (p.updated_at) and not exists(p.deleted_at) "
                            "return p",
                            place_id=place_id)
         result = []
@@ -67,7 +67,7 @@ def find_places_by_device_id(devices_list_id):
     with driver.session() as session:
         for device_id in devices_list_id:
             node = session.run("match (d:Device {id:$device_id}) <- [r] - (p:Place) "
-                               "WHERE not exists(p.deleted_at)"
+                               "where not exists (p.updated_at) and not exists(p.deleted_at) "
                                "return p",
                                device_id=device_id)
 

@@ -22,6 +22,24 @@
         <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
+                    <h4 class="card-title">Update Project Form</h4>
+
+                    <form class="forms-sample" action="/projects/{{project['id']}}" method="post">
+                        <div class="form-group">
+                            <label for="exampleInputUsername1">New Project Name</label>
+                            <input type="text" class="form-control" id="exampleInputUsername1" name="projectName"
+                                   placeholder="Project Name ex : Moon Lander">
+                        </div>
+                        <button type="submit" class="btn btn-primary me-2">Update Project</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
                     <h4 class="card-title">experiment form</h4>
                     <p class="card-description">
                         add a experiment
@@ -51,16 +69,18 @@
                                 <th>Profile</th>
                                 <th>Page</th>
                                 <th>Created</th>
-<!--                                <th>Status</th>-->
+                                <!--                                <th>Status</th>-->
                             </tr>
                             </thead>
                             <tbody>
                             {% for each in experiments %}
                             <tr>
                                 <td>{{ each['name']}}</td>
-                                <td><a href="/experiment/{{each['id']}}"><button type="button" class="btn btn-outline-info btn-fw">Info</button></a></td>
+                                <td><a href="/experiment/{{each['id']}}">
+                                    <button type="button" class="btn btn-outline-info btn-fw">Info</button>
+                                </a></td>
                                 <td>{{each['Created at']}}</td>
-<!--                                <td><label class="badge badge-danger">Pending</label><label class="badge badge-warning">Pending</label></td>-->
+                                <!--                                <td><label class="badge badge-danger">Pending</label><label class="badge badge-warning">Pending</label></td>-->
                             </tr>
                             {% endfor %}
                             </tbody>
