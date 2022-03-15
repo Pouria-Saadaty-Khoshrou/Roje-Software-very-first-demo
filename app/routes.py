@@ -121,6 +121,24 @@ def delete_experiment(id):
     return redirect(f'/projects/{project_id}')
 
 
+@app.route("/experiment/<id>", methods=['POST'])
+def update_experiment(id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    form = request.form.to_dict()
+    dic = {}
+    print(form)
+    if form['name'] != '':
+        dic['name'] = form['name']
+    if dic != {}:
+        node_id = updateFunc.copy_nodes(id)
+        updateFunc.update_node(dic, node_id)
+    else:
+        node_id = id
+    return redirect(f'/experiment/{node_id}')
+
 
 @app.route("/experiment", methods=['POST'])
 def makeExperiment():
@@ -250,6 +268,25 @@ def delete_result(id):
     delFunc.delete_node_by_id(id)
     return redirect(f'/experiment/{experiment_id[0]}')
 
+
+@app.route('/update_result/<id>', methods=['POST'])
+def update_result(id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    form = request.form.to_dict()
+    dic = {}
+    #print(form, '***********\n\n\n\n\n\n')
+    if form['name'] != '':
+        dic['result_name'] = form['name']
+    if dic != {}:
+        node_id = updateFunc.copy_nodes(id)
+        updateFunc.update_node(dic, node_id)
+    else:
+        node_id = id
+    return redirect(f'/Results/{node_id}')
+
 @app.route('/protocols', methods=['POST'])
 def create_protocol():
     data = request.form.to_dict()
@@ -335,6 +372,39 @@ def delete_standards(id):
     delFunc.delete_node_by_id(id)
     return redirect('/projects_standard')
 
+
+@app.route('/update_standard/<standard_id>', methods=['GET'])
+def update_form_standard(standard_id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    resp = make_response(render_template('update_standard.html',
+                                         standard_id=standard_id))
+    return resp
+
+@app.route('/update_standard/<standard_id>', methods=['post'])
+def update_standard(standard_id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    form = request.form.to_dict()
+    dic = {}
+    print(form,'***********\n\n\n\n')
+    if form['standard_name'] != '':
+        dic['Standard_name'] = form['standard_name']
+
+    if form['standard_content'] != '':
+        dic['Content'] = form['standard_content']
+
+    print(dic)
+
+    if dic != {}:
+        node_id = updateFunc.copy_nodes(standard_id)
+        updateFunc.update_node(dic, node_id)
+
+    return redirect(f'/projects_standard')
 
 # @app.route()
 # def update_standards(id):
@@ -615,6 +685,48 @@ def delete_boms(id):
         return resp
     delFunc.delete_node_by_id(id)
     return redirect('/BOMs')
+
+
+@app.route('/update_bom/<bom_id>', methods=['GET'])
+def update_form_BOM(bom_id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    resp = make_response(render_template('update_BOM.html',
+                                         bom_id=bom_id))
+    return resp
+
+
+@app.route('/update_bom/<bom_id>', methods=['post'])
+def update_BOM(bom_id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    form = request.form.to_dict()
+    dic = {}
+    #print(form,'***********\n\n\n\n')
+    if form['BOM_Description'] != '':
+        dic['description'] = form['BOM_Description']
+
+    if form['BOM_Name'] != '' and not bomFunc.Existance_of_BOM(form['BOM_Name']):
+        dic['BOM_name'] = form['BOM_Name']
+
+    if form['ph'] != '':
+        dic['ph'] = form['ph']
+
+    if form['volume'] != '':
+        dic['volume'] = form['volume']
+
+    if form['Type_of_material'] != '':
+        dic['Type_of_material'] = form['Type_of_material']
+
+    if dic != {}:
+        node_id = updateFunc.copy_nodes(bom_id)
+        updateFunc.update_node(dic, node_id)
+    #print(dic)
+    return redirect(f'/BOMs')
 
 
 # -----------------added by hossein 2/23/2022--------------

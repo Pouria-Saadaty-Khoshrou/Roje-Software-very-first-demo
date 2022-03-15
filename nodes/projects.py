@@ -53,7 +53,7 @@ def getProjectById(id:str):
 
 def getProjectExperiments(id:str):
     query = "match (n:Project {id:$id})-[r]->(experiments:Experiment) " \
-            "where not exists (n.updated_at) and not exists(n.deleted_at) " \
+            "where not exists (experiments.updated_at) and not exists(experiments.deleted_at) " \
             "return experiments "
     session = driver.session()
     result = session.run(query,id=id)

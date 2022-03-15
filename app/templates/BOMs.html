@@ -20,7 +20,9 @@
                             <p>{{each['description']}}</p>
                             <p>{{each['volume']}}</p>
                             <a type="button" class="btn btn-danger" href="{{ url_for('delete_boms' ,id=each['id'] )}}">Delete
-                                Project </a>
+                                BOM </a>
+                            <a type="button" class="btn btn-primary me-2" href="/update_bom/{{each['id']}}">Update
+                                Device </a>
                             {% endfor %}
                         </div>
 

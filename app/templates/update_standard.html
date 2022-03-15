@@ -1,0 +1,29 @@
+<!--#started by pouria - date : 6/2/2022-->
+{% include 'header.html' %}
+
+
+<div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">New Standard Form</h4>
+
+            <form class="forms-sample" action="/update_standard/{{standard_id}}" method="post">
+                <div class="form-group">
+                    <label>Standard Name</label>
+                    <input type="text" class="form-control" id="exampleInputUsername1" name="standard_name" placeholder="Standard Name">
+                </div>
+
+                <div class="form-group">
+                    <label>Standard Content</label>
+                    <input type="text" class="form-control" id="exampleInputUsername1" name="standard_content" placeholder="Standard Content">
+                </div>
+
+                <button type="submit" class="btn btn-primary me-2">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% include 'footer.html' %}
+<!--#ended by pouria - date : 6/2/2022-->
