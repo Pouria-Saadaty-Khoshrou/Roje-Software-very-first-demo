@@ -103,6 +103,9 @@ def update_project(id):
     if dic != {}:
         node_id = updateFunc.copy_nodes(id)
         updateFunc.update_node(dic, node_id)
+    else:
+        node_id = id
+
     return redirect(f'/projects/{node_id}')
 
 
@@ -384,6 +387,21 @@ def delete_place(id):
     resp = make_response(render_template('Places.html', places=places))
     return resp
 
+@app.route("/update_place/<id>", methods=['POST'])
+def update_place(id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    form = request.form.to_dict()
+    dic = {}
+    if form['Place_Name'] != '':
+        dic['Place_name'] = form['Place_Name']
+    if dic != {}:
+        node_id = updateFunc.copy_nodes(id)
+        updateFunc.update_node(dic, node_id)
+    return redirect(f'/Places')
+
 
 @app.route('/Devices', methods=['GET'])
 def show_devices():
@@ -424,29 +442,43 @@ def delete_device(id):
     resp = make_response(render_template('Places.html', places=places))
     return resp
 
-# @app.route('/update_device', methods=['post'])
-# def update_device():
-#     userId = request.cookies.get('User_id')
-#     if not userId:
-#         resp = make_response(render_template('login.html'))
-#         return resp
-#     form = request.form.to_dict()
-#     dic = {}
-#     print(form,'***********\n\n\n\n')
-#     # if form['device_name'] != '':
-#     #     dic['device_name'] = form['device_name']
-#     #
-#     # elif form['device_id'] != '':
-#     #     dic['device_name'] = form['device_id']
-#     #
-#     # elif form['device_description'] != '':
-#     #     dic['device_name'] = form['device_description']
-#     #
-#     #
-#     # if dic != {}:
-#     #     node_id = updateFunc.copy_nodes(id)
-#     #     updateFunc.update_node(dic, node_id)
-#     return redirect(f'/Devices')
+
+
+@app.route('/update_device/<device_id>/<place_id>', methods=['GET'])
+def update_form_devices(device_id, place_id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    resp = make_response(render_template('update_device.html',
+                                         device_id=device_id,
+                                         place_id=place_id))
+    return resp
+
+
+@app.route('/update_device/<device_id>/<place_id>', methods=['post'])
+def update_device(device_id, place_id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    form = request.form.to_dict()
+    dic = {}
+    #print(form,'***********\n\n\n\n')
+    if form['device_name'] != '':
+        dic['device_name'] = form['device_name']
+
+    if form['device_id'] != '' and not deviceFunc.Existance_of_Device_Id(form['device_id']):
+        dic['device_id'] = form['device_id']
+
+    if form['device_description'] != '':
+        dic['device_description'] = form['device_description']
+
+    if dic != {}:
+        node_id = updateFunc.copy_nodes(device_id)
+        updateFunc.update_node(dic, node_id)
+    #print(dic)
+    return redirect(f'/Places/{place_id}')
 
 
 # ---------------ended by pouria - date : 7/2/2022 ---------------#
