@@ -123,6 +123,21 @@
             </div>
         </div>
     </div>
+
+    <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <form class="forms-sample" action="{{ url_for('update_result' ,id=result_id) }}" method="post">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="exampleInputUsername1" name="name"
+                               placeholder="Result Name: Pouria Saadaty khoshrou">
+                    </div>
+                    <button type="submit" class="btn btn-primary me-2">Update Result</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
     <!--    <div class="col-md-12 grid-margin stretch-card">-->
     <!--        <div class="card">-->
     <!--            <div class="card-body">-->

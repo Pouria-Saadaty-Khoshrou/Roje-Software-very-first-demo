@@ -18,6 +18,24 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Update experiment Form</h4>
+
+                    <form class="forms-sample" action="{{ url_for('update_experiment' ,id=experiment_id) }}" method="post">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="exampleInputUsername1" name="name"
+                                   placeholder="Experiment Name: Pouria Saadaty khoshrou">
+                        </div>
+                        <button type="submit" class="btn btn-primary me-2">Update Experiment</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">

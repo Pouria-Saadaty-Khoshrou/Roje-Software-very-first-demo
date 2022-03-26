@@ -22,7 +22,7 @@ def createExperiment(projectId, name):
 def getExperimentById(id):
     session = driver.session()
     query = "match (experiment:Experiment {id:$id}) " \
-            "WHERE not exists(experiment.deleted_at) " \
+            "where not exists (experiment.updated_at) and not exists(experiment.deleted_at) " \
             "return experiment"
     # TODO: have to add protocols
     result = session.run(query, id=id)
@@ -101,7 +101,7 @@ def getTree(id: str):
 def getTree_Pouria(id: str, type):
     with driver.session() as session:
         result = session.run(f"match (n {{id:'{id}'}})-[r*]->(en:{type}) "
-                             f"WHERE not exists(en.deleted_at) "
+                             f"where not exists (en.updated_at) and not exists(en.deleted_at) "
                              f"return n,r,en")
         data = []
         for each in result:
@@ -163,7 +163,7 @@ def getTree_Pouria(id: str, type):
 def find_project_by_experiment_id(id):
     with driver.session() as session:
         node = session.run("match (e:Experiment{id:$id}) <- [r:partOf] - (p:Project) "
-                           "WHERE not exists(e.deleted_at) "
+                           "where not exists (e.updated_at) and not exists(e.deleted_at) "
                            "return p.id",
                            id=id)
         result = []
