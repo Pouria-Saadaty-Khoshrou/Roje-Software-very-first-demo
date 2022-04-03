@@ -89,6 +89,40 @@
                 </div>
             </div>
         </div>
+
+
+        <form class="forms-sample" action="{{ url_for('add_user_to_project' ,id=id) }}" method="post">
+            <div class="form-group">
+                <label>Users List</label>
+                <div class="form-group">
+                    <select class="js-example-basic-multiple w-100 select2-hidden-accessible" multiple=""
+                            name="user_list" tabindex="-1" aria-hidden="true">
+
+                        {% for each in users %}
+                        <option value="{{each['id']}}" data-select2-id="3">{{each['name']}}</option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Permissions</label>
+                    <select class="js-example-basic-multiple w-100 select2-hidden-accessible" multiple=""
+                            name="permission" tabindex="-1" aria-hidden="true">
+
+
+                        <option value="read" data-select2-id="3">read</option>
+                        <option value="write" data-select2-id="3">write</option>
+                        <option value="delete" data-select2-id="3">delete</option>
+                        <option value="update" data-select2-id="3">update</option>
+
+
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary me-2">Submit</button>
+            </div>
+        </form>
+
+
     </div>
 </div>
 {% include 'footer.html' %}
