@@ -1,4 +1,4 @@
- #---------------started by pouria - date : 6/2/2022 ---------------#
+# ---------------started by pouria - date : 6/2/2022 ---------------#
 from app.services.neo4j import driver
 
 
@@ -38,7 +38,6 @@ from app.services.neo4j import driver
 
 # This func create rel between standard and expert
 def Create_Rel(project_id, standard_id):
-
     with driver.session() as session:
         rel = session.run("match (e:Project{id:$project_id})"
                           " match (s:Standard{id:$standard_id})"
@@ -48,12 +47,10 @@ def Create_Rel(project_id, standard_id):
                           project_id=project_id,
                           standard_id=standard_id)
 
-
     # This function Create Standard
 
 
 def Create_Standards(Content, project_id, Standard_name):
-
     with driver.session() as session:
         node = session.run(
             "create (s:Standard{Standard_name:$Standard_name,"
@@ -77,6 +74,7 @@ def get_standards_by_project_id(project_id):
             result.append(each['s'])
         return result
 
+
 # def delete_standards_by_id(standard_id):
 #
 #     with driver.session() as session:
@@ -94,7 +92,7 @@ def Get_Standard_by_USer_Id(user_id):
             result.append(each['s'])
         return result
 
-#def update_standards(standard_id):
+# def update_standards(standard_id):
 
 # Delete all relations and node
 # def delete_Standard(ID):
@@ -124,5 +122,5 @@ def Get_Standard_by_USer_Id(user_id):
 #                 return {'Job': 'Done'}
 
 # --------------ended by Pouria - date : ------------
-#---------------started by hossein date : 2/23/2022-----------
+# ---------------started by hossein date : 2/23/2022-----------
 

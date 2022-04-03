@@ -77,7 +77,9 @@ def create_projects():
 def read_project(id):
     project = pFunc.getProjectById(id)
     experiments = pFunc.getProjectExperiments(id)
-    resp = make_response(render_template('project.html', project=project, experiments=experiments))
+    users = uFunc.get_user()
+    # print(users)
+    resp = make_response(render_template('project.html', project=project, experiments=experiments, users=users, id=id))
     return resp
 
 
@@ -107,6 +109,19 @@ def update_project(id):
         node_id = id
 
     return redirect(f'/projects/{node_id}')
+
+@app.route("/add_user_to_project/<id>", methods=['POST'])
+def add_user_to_project(id):
+    userId = request.cookies.get('User_id')
+    if not userId:
+        resp = make_response(render_template('login.html'))
+        return resp
+    form = request.form.to_dict(flat=False)
+    if form['user_list'] != [] and form['permission'] != []:
+        for u in form['user_list']:
+            for p in form['permission']:
+                pFunc.connect_user_to_project(id, u, p)
+    return redirect(f'/projects/{id}')
 
 
 
@@ -359,8 +374,9 @@ def add_standards():
     form = request.form.to_dict()
     sFunc.Create_Standards(form['standard_content'], form['project_id'], form["standard_name"])
     userProjects = pFunc.findUserProjects(userId)
-    resp = make_response(render_template('standard_form.html', userProjects=userProjects))
-    return resp
+    # resp = make_response(render_template('standard_form.html', userProjects=userProjects))
+    # return resp
+    return redirect('/projects_standard')
 
 
 @app.route('/delete_standards/<id>')

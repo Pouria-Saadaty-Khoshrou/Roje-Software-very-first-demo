@@ -33,5 +33,16 @@ def create_user(userDict:dict):
     session.close()
 
 
+def get_user():
+    result = []
+    with driver.session() as session:
+        node = session.run("match (u:User)"
+                           "where not exists (u.updated_at) and not exists(u.deleted_at) "
+                           " return u")
+        for each in node.data():
+            result.append(each['u'])
+        return result
+
+
 
 
